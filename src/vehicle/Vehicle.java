@@ -37,5 +37,9 @@ public class Vehicle {
 
     }
 
+    void move(int x, int y){
+        this.location.setLocation(x,y);
+    }
+
 
 }
