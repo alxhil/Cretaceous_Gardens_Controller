@@ -1,0 +1,10 @@
+automatedstation [Object] (There will be one automation station)
+ - LinkedList of guests (Houses all of the guests that will be on the island)
+
+CGC -- Main Class (will contain all of the logic and the loop of the simulation)
+
+Guest [Object]
+ - Will have a point that determines location to GUI
+
+Vehicle [Object]
+ -
