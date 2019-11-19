@@ -33,7 +33,7 @@ public class Cgc extends Application {
     private final double HEIGHT = 900;
     private final double RATIO = (WIDTH + HEIGHT)/Math.sqrt(WIDTH/2);
     private int guestCount = 0;
-    private double i = 0.0;
+    private double h = 4.71;
 
     public static void main(String[] args) {
         launch(args);
@@ -49,13 +49,11 @@ public class Cgc extends Application {
         Circle c = new Circle(0,0 , RATIO);
         c.setFill(Color.TRANSPARENT);
         c.setStroke(Color.BLACK);
-        Guest g = new Guest(0, new Point(0, 0));
+
         Vehicle v = new Vehicle(new Point(10, 10));
-        g.move(0, 0);
-        v.move(80, 80);
-        aStation.addGuest(g);
+        v.move(Math.cos(4.71), Math.sin(4.71));
         aStation.addVehicle(v);
-        root.getChildren().addAll(g.getC(), v.getR(), c);
+        root.getChildren().addAll(v.getR(), c, v.getText());
     }
 
     @Override
@@ -73,6 +71,8 @@ public class Cgc extends Application {
                 System.out.println("Mouse x: "+mouseX+" Mouse y: "+mouseY);
                 Guest g = new Guest(guestCount, new Point(mouseX,mouseY));
                 root.getChildren().add(g.getC());
+                g.getC().setTranslateX(mouseX);
+                g.getC().setTranslateY(mouseY);
                 aStation.addGuest(g);
             }
         });
@@ -93,15 +93,26 @@ public class Cgc extends Application {
         Vehicle v = aStation.getVehicleList().get(0);
 
 
-        i += .01;
+
 
         for(int i = 0; i < aStation.getGuestlist().size(); i++) {
             pathFinding(aStation.getGuestlist().get(i));
         }
 
+        for(int i = 0; i < aStation.getGuestlist().size(); i++) {
+            //System.out.println(""+aStation.getGuestlist().get(i).getIntersection(v));
+            if(aStation.getGuestlist().get(i).getIntersection(v) && !aStation.getGuestlist().get(i).getInVehicle()){
+                //System.out.println("debug 1");
+                v.addToVehicle(aStation.getGuestlist().get(i));
+            }
+            //System.out.println(i);
+        }
 
-        v.move(-Math.cos(i)*RATIO, -Math.sin(i)*RATIO);
-
+        if(v.isMoving()) {
+            h += .01;
+            //System.out.println("moving");
+            v.move(-Math.cos(h) * RATIO, -Math.sin(h) * RATIO);
+        }
 
     }
 
@@ -115,25 +126,24 @@ public class Cgc extends Application {
         double x2 = vList.get(0).getLocation().getX();
         double y2 = vList.get(0).getLocation().getY();
         double distance = distance(x1,x2,y1,y2);
-        //System.out.println("x1 : "+x1+" x2: "+x2+" y1: "+y1+" y2: "+y2);
+
         double xSlope = 0;
         double ySlope = 0;
         if(y2 > y1){
-            ySlope = 1;
-        } else if (y2 == y1) {
-            ySlope = 0;
+            ySlope = .1;
         } else {
-            ySlope = -1;
+            ySlope = -.1;
         }
 
+
         if(x2 > x1) {
-            xSlope = 1;
-        } else if (x2 == x1) {
-            xSlope = 0;
+            xSlope = .1;
         } else {
-            xSlope = -1;
+            xSlope = -.1;
         }
-        g.move(g.getLocation().getX()+(distance/RATIO)*xSlope, g.getLocation().getY()+(distance/RATIO)*ySlope );
+        if(!vList.get(0).isMoving() || g.getInVehicle()) {
+            g.move(g.getLocation().getX() + (distance) * xSlope, g.getLocation().getY() + ((distance) * ySlope));
+        }
 
     }
 
