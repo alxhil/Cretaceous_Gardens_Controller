@@ -28,6 +28,25 @@ public class Cgc{
         this.guestList.add(guest);
     }
 
+    public <T> boolean register(Object resource){
+        String className = resource.getClass().getSimpleName();
+        if (className.equals("Guest")){
+            this.registerGuest((Guest)resource);
+        } else if (resource instanceof Resource) {
+            registerResource((Resource)resource);
+        } else {
+            System.out.printf("Unknown type attempted to register '%s'\n", className);
+            return false;
+        }
+        return true;
+    }
+
+    // Noop for now
+    public <T> void handleEvent(Object update){}
+
+    // Noop for now
+    public void registerAlert(Resource resource) {}
+
     public <T> void registerResource(Resource resource){
         String className = resource.getClass().getSimpleName();
         if (className.equals("Vehicle")) {

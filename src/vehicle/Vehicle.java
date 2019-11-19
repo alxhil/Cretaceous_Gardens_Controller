@@ -7,6 +7,7 @@ import java.lang.UnsupportedOperationException;
 
 import java.awt.*;
 import java.util.LinkedList;
+import java.util.UUID;
 import interfaces.Resource;
 
 public class Vehicle implements Resource {
@@ -59,7 +60,7 @@ public class Vehicle implements Resource {
      *
      * @return  Returns true if LinkedList from parameter has guest from parameter, else return false.
      */
-    Boolean validate(Guest g, LinkedList<String> uuid){
+    Boolean validate(Guest g, LinkedList<UUID> uuid){
         if(uuid.contains(g.getUUID())){
             return true;
         } else {
@@ -67,6 +68,18 @@ public class Vehicle implements Resource {
         }
 
     }
+
+    public boolean verifyEntryRFID(UUID userToken){
+        // Mocked for the simulation
+        return true;
+    }
+
+    public boolean registerSeatRFID(UUID userToken){
+        // Mocked for the simulation
+        return true;
+    }
+
+
 
     void checkCapacity() {
         if(this.currentCapacity >= 10){
@@ -110,20 +123,19 @@ public class Vehicle implements Resource {
     }
 
     public void addToVehicle(Guest g) {
-        if(!g.getInVehicle()) {
+        if(!g.isInVehicle()) {
             this.guestsInVehicle.add(g);
             increaseCapacity();
             this.text.setText("" + currentCapacity);
             g.setInVehicle(true);
-            System.out.println("added to vehicle");
         } else {
             System.out.println("Already in vehicle");
         }
     }
 
     public void removeFromVehicle(Guest g) {
-        for(int i = 0; i < this.guestsInVehicle.size(); i++){
-            if(g == this.guestsInVehicle.get(i)) {
+        for(Guest carGuest: this.guestsInVehicle){
+            if(g == carGuest) {
                 this.guestsInVehicle.remove(g);
             } else {
                 System.out.println("Error 2: failed to find in list");
@@ -131,9 +143,25 @@ public class Vehicle implements Resource {
         }
     }
 
+    public boolean isOverCapcityDetected() {
+        return this.currentCapacity > 10;
+    }
+
     public Text getText(){
         return this.text;
     }
+
+    // Is a noop in the simulation
+    public boolean isObstructionDetected() {return false;}
+
+    // Is a noop in the simulation
+    public void openDoor() {}
+
+    // Is a noop in the simulation
+    public void closeDoor() {}
+
+    // Is a noop in the simulation
+    public void playAudio(String filePath){}
 
 
 }

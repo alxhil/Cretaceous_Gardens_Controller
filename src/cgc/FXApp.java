@@ -79,7 +79,6 @@ public class FXApp extends Application {
 
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.0133), event -> {
             testLoop();
-
         }));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
@@ -88,29 +87,28 @@ public class FXApp extends Application {
 
     public void testLoop() {
         for (Vehicle v : controller.getVehicles()) {
+            if(v.isMoving()) {
+                h += .01;
+                //System.out.println("moving");
+                v.move(-Math.cos(h) * RATIO, -Math.sin(h) * RATIO);
+                continue;
+            }
             for(Guest guest : controller.getGuests()) {
                 pathFinding(guest);
             }
 
             for(Guest guest : controller.getGuests()) {
-                if(guest.getIntersection(v) && !guest.getInVehicle()){
+                if(guest.getIntersection(v) && !guest.isInVehicle()){
                     v.addToVehicle(guest);
                 }
             }
 
-            if(v.isMoving()) {
-                h += .01;
-                //System.out.println("moving");
-                v.move(-Math.cos(h) * RATIO, -Math.sin(h) * RATIO);
-            }
         }
 
     }
 
     public void pathFinding(Guest g) {
         Vehicle vehicle = controller.getVehicles().get(0);
-        int nearestV;
-        double temp = 0;
         double x1 = g.getLocation().getX();
         double y1 = g.getLocation().getY();
         double x2 = vehicle.getLocation().getX();
@@ -120,9 +118,6 @@ public class FXApp extends Application {
         double xSlope = 0;
         double ySlope = 0;
 
-        if (vehicle.isMoving()) {
-            return;
-        }
         if(y2 > y1){
             ySlope = .1;
         } else {
@@ -135,10 +130,7 @@ public class FXApp extends Application {
         } else {
             xSlope = -.1;
         }
-        if(!vehicle.isMoving() || g.getInVehicle()) {
-            g.move(g.getLocation().getX() + (distance) * xSlope, g.getLocation().getY() + ((distance) * ySlope));
-        }
-
+        g.move(g.getLocation().getX() + (distance) * xSlope, g.getLocation().getY() + ((distance) * ySlope));
     }
 
     public double distance(double x1, double x2, double y1, double y2){

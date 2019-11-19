@@ -46,26 +46,19 @@ public class Guest {
     https://gamedev.stackexchange.com/a/79628 thank you
      */
     public Boolean getIntersection(Vehicle v) {
-        if(this.c.getBoundsInParent().intersects(v.getR().getBoundsInParent())){
-            return true;
-        } else {
-            return false;
-        }
+        return this.c.getBoundsInParent().intersects(v.getR().getBoundsInParent());
     }
 
     public Circle getC (){
         return this.c;
     }
 
-    public Boolean getInVehicle(){
+    public Boolean isInVehicle(){
         return this.inVehicle;
     }
 
     public void setInVehicle(Boolean b) {
         this.inVehicle = b;
     }
-
-
-
 
 }
