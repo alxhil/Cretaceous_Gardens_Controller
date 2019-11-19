@@ -3,11 +3,13 @@ package vehicle;
 import guest.Guest;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import java.lang.UnsupportedOperationException;
 
 import java.awt.*;
 import java.util.LinkedList;
+import interfaces.Resource;
 
-public class Vehicle {
+public class Vehicle implements Resource {
     private int currentCapacity;
     private boolean isMoving;
     private boolean isFull;
@@ -17,12 +19,13 @@ public class Vehicle {
     private Rectangle r;
     private LinkedList<Guest> guestsInVehicle;
 
+    private boolean emergency;
+
     /**
      *
      *
      */
     public Vehicle(Point p){
-
         this.text = new Text(0, 0, "0");
         this.guestsInVehicle = new LinkedList<Guest>();
         this.r = new Rectangle(20,10);
@@ -31,9 +34,16 @@ public class Vehicle {
         this.isMoving = false;
         this.isFull = false;
         this.number = Math.random()*1000+"";
+        this.emergency = false;
     }
 
+    public boolean sendStatus(){
+        throw new UnsupportedOperationException();
+    }
 
+    public void setEmergency(boolean emergency){
+        this.emergency = emergency;
+    }
 
     void increaseCapacity() {
         if (this.currentCapacity < 10) {
@@ -96,11 +106,7 @@ public class Vehicle {
     }
 
     public void setMoving() {
-        if(!this.isMoving) {
-            this.isMoving = true;
-        } else {
-            this.isMoving = false;
-        }
+        this.isMoving = !this.isMoving;
     }
 
     public void addToVehicle(Guest g) {
@@ -111,7 +117,7 @@ public class Vehicle {
             g.setInVehicle(true);
             System.out.println("added to vehicle");
         } else {
-            //System.out.println("Already in vehicle");
+            System.out.println("Already in vehicle");
         }
     }
 

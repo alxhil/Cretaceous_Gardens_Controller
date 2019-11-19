@@ -1,6 +1,13 @@
 package security;
 
-public class SecuritySystem {
+import interfaces.Resource;
+
+import java.lang.UnsupportedOperationException;
+
+public class SecuritySystem implements Resource{
+
+    private boolean emergency;
+
     public boolean isEmergencyOn(Boolean isFenceCompromised)
     {
         boolean isEmergencyOn = false;
@@ -11,4 +18,11 @@ public class SecuritySystem {
         return isEmergencyOn;
     }
 
+    public boolean sendStatus(){
+        throw new UnsupportedOperationException();
+    }
+
+    public void setEmergency(boolean emergency){
+        this.emergency = emergency;
+    }
 }

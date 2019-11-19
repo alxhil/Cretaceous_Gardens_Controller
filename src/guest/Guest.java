@@ -10,23 +10,22 @@ import java.util.UUID;
 
 public class Guest {
 
-    private String uuid;
+    private UUID uuid;
     private int number;
     private Point location;
     private Boolean draw;
     private Boolean inVehicle;
     private Circle c;
 
-    public Guest(int number, Point p){
+    public Guest(Point p){
         this.inVehicle = false;
-        this.number = number;
         this.location = p;
         this.c = new Circle(this.location.getX(), this.location.getY(), 9);
         this.draw = true;
-        this.uuid = new UUID(123456789,123456789).toString();
+        this.uuid = new UUID(123456789,123456789);
     }
 
-    public String getUUID() {
+    public UUID getUUID() {
         return this.uuid;
     }
 

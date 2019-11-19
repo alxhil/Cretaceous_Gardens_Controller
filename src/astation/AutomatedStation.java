@@ -2,14 +2,26 @@ package astation;
 
 import guest.Guest;
 import vehicle.Vehicle;
+import interfaces.Resource;
+import java.lang.UnsupportedOperationException;
 
 import java.util.LinkedList;
 
-public class AutomatedStation {
+public class AutomatedStation implements Resource {
 
 
     private LinkedList<Guest> guestList;
     private LinkedList<Vehicle> vehicleList;
+
+    private boolean emergency;
+
+    public boolean sendStatus(){
+        throw new UnsupportedOperationException();
+    }
+
+    public void setEmergency(boolean emergency){
+        this.emergency = emergency;
+    }
 
     public AutomatedStation() {
 
