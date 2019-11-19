@@ -10,13 +10,13 @@ import java.util.UUID;
 public class Guest {
 
     private String uuid;
-    private String name;
+    private int number;
     private Point location;
     private Boolean draw;
     private Circle c;
 
-    public Guest(String name, Point p){
-        this.name = name;
+    public Guest(int number, Point p){
+        this.number = number;
         this.location = p;
         this.c = new Circle(9);
         this.draw = true;
@@ -39,7 +39,7 @@ public class Guest {
         return this.location.getLocation();
     }
 
-    public Boolean getIntersection(javafx.scene.shape.Rectangle r) {
+    public Boolean getIntersection(Rectangle r) {
         if(this.c.intersects(r.getLayoutBounds())){
             return true;
         } else {
