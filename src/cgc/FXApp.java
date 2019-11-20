@@ -8,6 +8,8 @@ import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -75,6 +77,15 @@ public class FXApp extends Application {
                 g.getC().setTranslateY(mouseY);
             }
         });
+        primaryStage.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+            public void handle(KeyEvent ke) {
+                if (ke.getCode() == KeyCode.V) {
+                    for(Guest g : controller.getGuests()) {
+                        g.setVisible();
+                    }
+                }
+            }
+        });
         startUp();
 
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.0133), event -> {
@@ -94,12 +105,14 @@ public class FXApp extends Application {
                 continue;
             }
             for(Guest guest : controller.getGuests()) {
-                pathFinding(guest);
+                pathFinding(guest, new Point(controller.getVehicles().get(0).getLocation().x,
+                        controller.getVehicles().get(0).getLocation().y));
             }
 
             for(Guest guest : controller.getGuests()) {
                 if(guest.getIntersection(v) && !guest.isInVehicle()){
                     v.addToVehicle(guest);
+                    guest.setInvisible();
                 }
             }
 
@@ -107,12 +120,11 @@ public class FXApp extends Application {
 
     }
 
-    public void pathFinding(Guest g) {
-        Vehicle vehicle = controller.getVehicles().get(0);
+    public void pathFinding(Guest g, Point p) {
         double x1 = g.getLocation().getX();
         double y1 = g.getLocation().getY();
-        double x2 = vehicle.getLocation().getX();
-        double y2 = vehicle.getLocation().getY();
+        double x2 = p.getX();
+        double y2 = p.getY();
         double distance = distance(x1,x2,y1,y2);
 
         double xSlope = 0;

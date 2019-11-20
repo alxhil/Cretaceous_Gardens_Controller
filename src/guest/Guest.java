@@ -61,4 +61,17 @@ public class Guest {
         this.inVehicle = b;
     }
 
+    /*
+    https://stackoverflow.com/a/58800861
+     */
+    public void setInvisible() {
+        this.c.setVisible(false);
+        this.c.managedProperty().bind(c.visibleProperty());
+    }
+
+    public void setVisible() {
+        this.c.setVisible(true);
+        this.c.managedProperty().bind(c.visibleProperty());
+    }
+
 }
