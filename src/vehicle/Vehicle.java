@@ -3,11 +3,14 @@ package vehicle;
 import guest.Guest;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import java.lang.UnsupportedOperationException;
 
 import java.awt.*;
 import java.util.LinkedList;
+import java.util.UUID;
+import interfaces.Resource;
 
-public class Vehicle {
+public class Vehicle implements Resource {
     private int currentCapacity;
     private boolean isMoving;
     private boolean isFull;
@@ -17,12 +20,13 @@ public class Vehicle {
     private Rectangle r;
     private LinkedList<Guest> guestsInVehicle;
 
+    private boolean emergency;
+
     /**
      *
      *
      */
     public Vehicle(Point p){
-
         this.text = new Text(0, 0, "0");
         this.guestsInVehicle = new LinkedList<Guest>();
         this.r = new Rectangle(20,10);
@@ -31,9 +35,16 @@ public class Vehicle {
         this.isMoving = false;
         this.isFull = false;
         this.number = Math.random()*1000+"";
+        this.emergency = false;
     }
 
+    public boolean sendStatus(){
+        throw new UnsupportedOperationException();
+    }
 
+    public void setEmergency(boolean emergency){
+        this.emergency = emergency;
+    }
 
     void increaseCapacity() {
         if (this.currentCapacity < 10) {
@@ -49,7 +60,7 @@ public class Vehicle {
      *
      * @return  Returns true if LinkedList from parameter has guest from parameter, else return false.
      */
-    Boolean validate(Guest g, LinkedList<String> uuid){
+    Boolean validate(Guest g, LinkedList<UUID> uuid){
         if(uuid.contains(g.getUUID())){
             return true;
         } else {
@@ -57,6 +68,18 @@ public class Vehicle {
         }
 
     }
+
+    public boolean verifyEntryRFID(UUID userToken){
+        // Mocked for the simulation
+        return true;
+    }
+
+    public boolean registerSeatRFID(UUID userToken){
+        // Mocked for the simulation
+        return true;
+    }
+
+
 
     void checkCapacity() {
         if(this.currentCapacity >= 10){
@@ -96,28 +119,23 @@ public class Vehicle {
     }
 
     public void setMoving() {
-        if(!this.isMoving) {
-            this.isMoving = true;
-        } else {
-            this.isMoving = false;
-        }
+        this.isMoving = !this.isMoving;
     }
 
     public void addToVehicle(Guest g) {
-        if(!g.getInVehicle()) {
+        if(!g.isInVehicle()) {
             this.guestsInVehicle.add(g);
             increaseCapacity();
             this.text.setText("" + currentCapacity);
             g.setInVehicle(true);
-            System.out.println("added to vehicle");
         } else {
-            //System.out.println("Already in vehicle");
+            System.out.println("Already in vehicle");
         }
     }
 
     public void removeFromVehicle(Guest g) {
-        for(int i = 0; i < this.guestsInVehicle.size(); i++){
-            if(g == this.guestsInVehicle.get(i)) {
+        for(Guest carGuest: this.guestsInVehicle){
+            if(g == carGuest) {
                 this.guestsInVehicle.remove(g);
             } else {
                 System.out.println("Error 2: failed to find in list");
@@ -125,9 +143,25 @@ public class Vehicle {
         }
     }
 
+    public boolean isOverCapcityDetected() {
+        return this.currentCapacity > 10;
+    }
+
     public Text getText(){
         return this.text;
     }
+
+    // Is a noop in the simulation
+    public boolean isObstructionDetected() {return false;}
+
+    // Is a noop in the simulation
+    public void openDoor() {}
+
+    // Is a noop in the simulation
+    public void closeDoor() {}
+
+    // Is a noop in the simulation
+    public void playAudio(String filePath){}
 
 
 }

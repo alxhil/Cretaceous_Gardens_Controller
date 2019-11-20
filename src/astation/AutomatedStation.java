@@ -1,46 +1,51 @@
 package astation;
 
 import guest.Guest;
-import vehicle.Vehicle;
+import interfaces.Resource;
+import cgc.Cgc;
 
-import java.util.LinkedList;
+import java.util.UUID;
+import java.lang.UnsupportedOperationException;
 
-public class AutomatedStation {
+public class AutomatedStation implements Resource {
 
+    private Cgc controller;
 
-    private LinkedList<Guest> guestList;
-    private LinkedList<Vehicle> vehicleList;
-
-    public AutomatedStation() {
-
-        this.vehicleList = new LinkedList<Vehicle>();
-        this.guestList = new LinkedList<Guest>();
-
+    public AutomatedStation(Cgc controller) {
+        this.controller = controller;
+        this.emergency = false;
     }
 
-    public void removeGuest(Guest a){
-        for(int i = 0; i < this.guestList.size(); i++){
-            if(a == guestList.get(i)){
-                guestList.remove(i);
-            } else {
-                System.out.println("Error 1");
-            }
-        }
+    private boolean emergency;
+
+    public boolean sendStatus(){
+        throw new UnsupportedOperationException();
     }
 
-    public void addGuest(Guest a) {
-        this.guestList.add(a);
+    private void registerVisitor(Guest guest){
+        this.controller.registerGuest(guest);
+    }
+    public void setEmergency(boolean emergency){
+        this.emergency = emergency;
     }
 
-    public void addVehicle(Vehicle v) {
-        this.vehicleList.add(v);
-    }
+    // Its a noop in the simulation
+    private void takePhoto() {}
 
-    public LinkedList<Guest> getGuestlist () {
-        return this.guestList;
-    }
+    // Its a noop in the simulation
+    private boolean validWaiver(Object waiver) {return true;}
 
-    public LinkedList<Vehicle> getVehicleList() {
-        return vehicleList;
-    }
+    // Its a noop in the simulation
+    private String startTransaction() {return "";}
+
+    // Its a noop in the simulation
+    private void cancelTransaction(String transactionID) {}
+
+    // Its a noop in the simulation
+    private void completeTransaction(String transactionID) {}
+
+    // Its a noop in the simulation
+    private void depositToken(UUID userID){}
+
+
 }
