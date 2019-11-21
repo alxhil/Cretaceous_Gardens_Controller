@@ -55,38 +55,38 @@ public class GraphicsHandler extends Application {
 
 
         // Creating Image object for each components in the theme park
-        ImageView grassImage = new ImageView(new Image(new FileInputStream("Resources/Grass.jpg")));
+        ImageView grassImage = new ImageView(new Image(new FileInputStream("static/img/Grass.jpg")));
         grassImage.setFitWidth(1500);
 
-        ImageView trexImage = new ImageView(new Image(new FileInputStream("Resources/alice.gif")));
+        ImageView trexImage = new ImageView(new Image(new FileInputStream("static/img/alice.gif")));
         trexImage.setFitHeight(80);
         trexImage.setFitWidth(150);
 
-        ImageView carImage = new ImageView(new Image(new FileInputStream("Resources/sideViewCar.png")));
+        ImageView carImage = new ImageView(new Image(new FileInputStream("static/img/sideViewCar.png")));
         carImage.setFitHeight(150);
         carImage.setFitWidth(100);
 
 
-        ImageView fenceImage = new ImageView(new Image(new FileInputStream("Resources/fence.png")));
+        ImageView fenceImage = new ImageView(new Image(new FileInputStream("static/img/fence.png")));
         fenceImage.setFitHeight(150);
         fenceImage.setFitWidth(350);
         fenceImage.setRotate(180.0);
 
 
-        ImageView pathImage = new ImageView(new Image(new FileInputStream("Resources/circularRoad.png")));
+        ImageView pathImage = new ImageView(new Image(new FileInputStream("static/img/circularRoad.png")));
         pathImage.setFitHeight(400);
         pathImage.setFitWidth(800);
 
 
-        ImageView payStationImage = new ImageView(new Image(new FileInputStream("Resources/payStation.png")));
+        ImageView payStationImage = new ImageView(new Image(new FileInputStream("static/img/payStation.png")));
         payStationImage.setFitWidth(150);
         payStationImage.setFitHeight(200);
 
 
         // Trees are on the border pane
         // getTreePane method give borderPane with trees
-        BorderPane longTreePane = getTreePane("Resources/longTree.png");
-        BorderPane shortTreePane = getTreePane("Resources/shortTree.png");
+        BorderPane longTreePane = getTreePane("static/img/longTree.png");
+        BorderPane shortTreePane = getTreePane("static/img/shortTree.png");
 
 
         // All the components are added to the anchor pane. Anchor pane is
