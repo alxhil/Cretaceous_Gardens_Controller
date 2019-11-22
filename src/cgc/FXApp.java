@@ -6,17 +6,27 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+
+import javafx.scene.layout.BorderPane;
+
 import javafx.scene.layout.Pane;
+
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.TriangleMesh;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -26,11 +36,13 @@ import guest.Guest;
 import vehicle.Vehicle;
 
 import java.awt.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.LinkedList;
 
 public class FXApp extends Application {
 
-    public Pane root = new Pane();
+    public StackPane root = new StackPane();
     private Boolean DEBUG = true;
     private Boolean DEBUGSTART = false;
     private final double WIDTH = 900;
@@ -46,10 +58,7 @@ public class FXApp extends Application {
     }
 
 
-    /**
-     * Testing | Don't change
-     * VVVVVVV
-     */
+
 
     public void zoneStart() {
 
@@ -62,25 +71,113 @@ public class FXApp extends Application {
                 new Zone(new Point(400, 600), "visitor"),  new Zone(new Point(400,250), "visitor") };
         for(Zone z : zA){
             root.getChildren().add(z.getR());
-            z.getR().toBack();
+            z.getR().toFront();
         }
 
     }
 
-    public void startUp() {
-        Vehicle v = new Vehicle(new Point(10, 10));
-        v.move(450, 470);
+
+
+    public void startUp() throws FileNotFoundException {
+
+        Image carImage = new Image(new FileInputStream("static/img/sideViewCar.png"));
+
+
+        Vehicle v = new Vehicle(new Point(10, 10),carImage);
+        v.move(Math.cos(4.71), Math.sin(4.71));
         controller.registerResource(v);
-        Circle c = new Circle(WIDTH/2,HEIGHT/2 , RATIO);
-        c.setFill(Color.TRANSPARENT);
-        c.setStroke(Color.BLACK);
-        root.getChildren().addAll(v.getR(), c, v.getText());
-        zoneStart();
+
+
+
+        // Trees are on the border pane
+        // getTreePane method give borderPane with trees
+        BorderPane longTreePane = getTreePane("static/img/longTree.png");
+        StackPane.setAlignment(longTreePane,Pos.CENTER_LEFT);
+        StackPane.setMargin(longTreePane, new Insets(300,50,650,550));
+
+        BorderPane shortTreePane = getTreePane("static/img/shortTree.png");
+        StackPane.setAlignment(shortTreePane,Pos.CENTER_RIGHT);
+        StackPane.setMargin(shortTreePane, new Insets(300,550,650,50));
+
+        ImageView pathImage = new ImageView(new Image(new FileInputStream("static/img/circularRoad.png")));
+
+        pathImage.setFitWidth(6*RATIO);
+        pathImage.setFitHeight(4*RATIO);
+        StackPane.setAlignment(pathImage, Pos.CENTER);
+
+        ImageView grassImage = new ImageView(new Image(new FileInputStream("static/img/Grass.jpg")));
+        grassImage.setFitWidth(900);
+        grassImage.setFitHeight(900);
+
+        ImageView trexImage = new ImageView(new Image(new FileInputStream("static/img/alice.gif")));
+        trexImage.setFitHeight(80);
+        trexImage.setFitWidth(150);
+        StackPane.setAlignment(trexImage,Pos.TOP_CENTER);
+        StackPane.setMargin(trexImage, new Insets(100));
+
+        ImageView fenceImage = new ImageView(new Image(new FileInputStream("static/img/fence.png")));
+        fenceImage.setFitHeight(200);
+        fenceImage.setFitWidth(300);
+        fenceImage.setRotate(180.0);
+        StackPane.setAlignment(fenceImage,Pos.TOP_CENTER);
+        StackPane.setMargin(fenceImage, new Insets(50));
+
+        ImageView payStationImage = new ImageView(new Image(new FileInputStream("static/img/payStation.png")));
+        payStationImage.setFitWidth(150);
+        payStationImage.setFitHeight(150);
+        StackPane.setAlignment(payStationImage, Pos.BOTTOM_RIGHT);
+        StackPane.setMargin(payStationImage, new Insets(200,100,200,150));
+
+
+        root.getChildren().addAll(grassImage,longTreePane,shortTreePane,pathImage,trexImage,
+                fenceImage,payStationImage,v.getR(), v.getText());
+
+
+
     }
 
-    @Override
-    public void start(Stage primaryStage) {
+    /**
+     * This method creates 5 objects of tree image and put it in
+     * the border pane.
+     * @param imageName image name which is a string
+     * @return  border Pane object with trees
+     * @throws FileNotFoundException
+     */
+    public BorderPane getTreePane(String imageName) throws FileNotFoundException {
+        BorderPane treePane = new BorderPane();
+
+
+        ImageView tree1 = new ImageView(new Image(new FileInputStream(imageName)));
+        tree1.setFitHeight(50);
+        ImageView tree2 = new ImageView(new Image(new FileInputStream(imageName)));
+        tree2.setFitHeight(50);
+        ImageView tree3 = new ImageView(new Image(new FileInputStream(imageName)));
+        tree3.setFitHeight(50);
+        ImageView tree4 = new ImageView(new Image(new FileInputStream(imageName)));
+        tree4.setFitHeight(50);
+        ImageView tree5 = new ImageView(new Image(new FileInputStream(imageName)));
+        tree5.setFitHeight(50);
+
+        treePane.setTop(tree1);
+        treePane.setBottom(tree2);
+        treePane.setLeft(tree3);
+        treePane.setRight(tree4);
+        treePane.setCenter(tree5);
+
+
+        BorderPane.setAlignment(tree1, Pos.CENTER);
+        BorderPane.setAlignment(tree2, Pos.CENTER);
+
+
+
+
+        return treePane;
+
+    }
+
+    public void start(Stage primaryStage) throws FileNotFoundException {
         root.setPrefSize(WIDTH,HEIGHT);
+
         primaryStage.setTitle("Cretaceous Gardens Simulation");
 
         primaryStage.setScene(new Scene(root));
@@ -90,7 +187,7 @@ public class FXApp extends Application {
             public void handle(MouseEvent mouseEvent) {
                 int mouseX = (int) mouseEvent.getSceneX();
                 int mouseY = (int) mouseEvent.getSceneY();
-                System.out.println("Mouse x: "+mouseX+" Mouse y: "+mouseY);
+                //System.out.println("Mouse x: "+mouseX+" Mouse y: "+mouseY);
                 Guest g = new Guest(new Point(mouseX,mouseY));
                 g.move(mouseX,mouseY);
                 System.out.println("Placed at ("+ g.getLocation().getX()+" ,"+ g.getLocation().getY()+")");
@@ -108,12 +205,13 @@ public class FXApp extends Application {
             }
         });
         startUp();
-
+        zoneStart();
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.0133), event -> {
             testLoop();
         }));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
+
 
     }
 
@@ -127,8 +225,12 @@ public class FXApp extends Application {
             if(v.isMoving()) {
                 h += .01;
                 //System.out.println("moving");
-                v.move(440+ (-Math.cos(h) * RATIO), 450+ (-Math.sin(h) * RATIO));
-                continue;
+
+                v.move(-Math.cos(h) * 2*RATIO, -Math.sin(h) *2* RATIO);
+                v.rotateVehicle(Math.asin(-h));
+
+               continue;
+
             }
 
 
@@ -194,6 +296,7 @@ public class FXApp extends Application {
     public double distance(double x1, double x2, double y1, double y2){
         return Math.sqrt(((y2 - y1) * (y2 - y1)) + ((x2 - x1) * (x2 - x1)));
     }
+
 
 
 }
