@@ -42,7 +42,7 @@ import java.util.LinkedList;
 
 public class FXApp extends Application {
 
-    public Pane root = new Pane();
+    public StackPane root = new StackPane();
     private Boolean DEBUG = true;
     private Boolean DEBUGSTART = false;
     private final double WIDTH = 900;
