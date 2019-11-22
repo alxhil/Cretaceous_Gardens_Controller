@@ -50,6 +50,23 @@ public class FXApp extends Application {
      * Testing | Don't change
      * VVVVVVV
      */
+
+    public void zoneStart() {
+
+        /**
+         * Zone Order : PARKING_SOUTH_END, PARKING_NORTH_END,
+         *              VISITOR_SOUTH_END, VISITOR_TREX_EXHIBIT
+         * ZONES BEING COLORED ON THE GUI IS TEMPRORARY, JUST FOR DEBUGGING PURPOSES AT THE MOMENT
+         */
+        Zone[] zA = {  new Zone(new Point(400,510), "parking") , new Zone(new Point(400, 350), "parking"),
+                new Zone(new Point(400, 600), "visitor"),  new Zone(new Point(400,250), "visitor") };
+        for(Zone z : zA){
+            root.getChildren().add(z.getR());
+            z.getR().toBack();
+        }
+
+    }
+
     public void startUp() {
         Vehicle v = new Vehicle(new Point(10, 10));
         v.move(450, 470);
@@ -58,6 +75,7 @@ public class FXApp extends Application {
         c.setFill(Color.TRANSPARENT);
         c.setStroke(Color.BLACK);
         root.getChildren().addAll(v.getR(), c, v.getText());
+        zoneStart();
     }
 
     @Override
@@ -109,7 +127,7 @@ public class FXApp extends Application {
             if(v.isMoving()) {
                 h += .01;
                 //System.out.println("moving");
-                v.move(-Math.cos(h) * RATIO, -Math.sin(h) * RATIO);
+                v.move(440+ (-Math.cos(h) * RATIO), 450+ (-Math.sin(h) * RATIO));
                 continue;
             }
 
@@ -166,9 +184,9 @@ public class FXApp extends Application {
         } else {
             xSlope = -.1;
         }
-        System.out.println("x1: " +x1+" y1: "+y1 +" x2: "+x2+" y2: "+y2);
-        System.out.println("xSlope: " +xSlope+" ySlope: "+ySlope);
-        System.out.println("moving to (" +(g.getC().getTranslateX() +( (distance) * xSlope))+") , ("+(g.getC().getTranslateY() + ((distance) * ySlope)) );
+        //System.out.println("x1: " +x1+" y1: "+y1 +" x2: "+x2+" y2: "+y2);
+        //System.out.println("xSlope: " +xSlope+" ySlope: "+ySlope);
+        //System.out.println("moving to (" +(g.getC().getTranslateX() +( (distance) * xSlope))+") , ("+(g.getC().getTranslateY() + ((distance) * ySlope)) );
         g.move(g.getC().getTranslateX() +( (distance) * xSlope), g.getC().getTranslateY() + ((distance) * ySlope));
 
     }

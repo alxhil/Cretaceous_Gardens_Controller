@@ -47,7 +47,7 @@ public class Vehicle implements Resource {
     }
 
     void increaseCapacity() {
-        if (this.currentCapacity < 999) {
+        if (this.currentCapacity < 10) {
             this.currentCapacity++;
             checkCapacity();
         } else {
@@ -82,7 +82,7 @@ public class Vehicle implements Resource {
 
 
     void checkCapacity() {
-        if(this.currentCapacity >= 999){
+        if(this.currentCapacity >= 10){
             this.isFull = true;
             this.isMoving = true;
         } else {
@@ -144,7 +144,7 @@ public class Vehicle implements Resource {
     }
 
     public boolean isOverCapcityDetected() {
-        return this.currentCapacity > 999;
+        return this.currentCapacity > 10;
     }
 
     public Text getText(){
