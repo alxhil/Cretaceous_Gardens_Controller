@@ -12,15 +12,13 @@ public class Guest {
 
     private UUID uuid;
     private int number;
-    private Point location;
     private Boolean draw;
     private Boolean inVehicle;
     private Circle c;
 
     public Guest(Point p){
         this.inVehicle = false;
-        this.location = p;
-        this.c = new Circle(this.location.getX(), this.location.getY(), 9);
+        this.c = new Circle(0, 0, 9);
         this.draw = true;
         this.uuid = new UUID(123456789,123456789);
     }
@@ -32,13 +30,12 @@ public class Guest {
 
 
     public void move(double x, double y) {
-        this.location.setLocation(x,y);
         this.c.setTranslateX(x);
         this.c.setTranslateY(y);
     }
 
     public Point getLocation() {
-        return this.location.getLocation();
+        return new Point((int) this.c.getTranslateX(), (int) this.c.getTranslateY());
     }
 
 
