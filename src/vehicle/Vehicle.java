@@ -1,8 +1,14 @@
 package vehicle;
 
 import guest.Guest;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.lang.UnsupportedOperationException;
 
 import java.awt.*;
@@ -20,16 +26,22 @@ public class Vehicle implements Resource {
     private Rectangle r;
     private LinkedList<Guest> guestsInVehicle;
 
+    public Rectangle getRectangle(){
+        return r;
+    }
+
     private boolean emergency;
 
     /**
      *
      *
      */
-    public Vehicle(Point p){
+    public Vehicle(Point p, Image carImage) throws FileNotFoundException {
         this.text = new Text(0, 0, "0");
         this.guestsInVehicle = new LinkedList<Guest>();
-        this.r = new Rectangle(20,10);
+        this.r = new Rectangle(50,50);
+        this.r.setFill(new ImagePattern(carImage));
+
         this.location = p;
         this.currentCapacity = 0;
         this.isMoving = false;
