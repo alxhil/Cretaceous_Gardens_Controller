@@ -2,7 +2,7 @@ package guest;
 
 
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import vehicle.Vehicle;
 
 import java.awt.*;
@@ -43,10 +43,10 @@ public class Guest {
     https://gamedev.stackexchange.com/a/79628 thank you
      */
     public Boolean getIntersection(Vehicle v) {
-        return this.c.getBoundsInParent().intersects(v.getR().getBoundsInParent());
+        return this.c.getBoundsInParent().intersects(v.getShape().getBoundsInParent());
     }
 
-    public Circle getC (){
+    public Shape getShape (){
         return this.c;
     }
 
@@ -58,17 +58,18 @@ public class Guest {
         this.inVehicle = b;
     }
 
+
     /*
     https://stackoverflow.com/a/58800861
      */
     public void setInvisible() {
         this.c.setVisible(false);
-        this.c.managedProperty().bind(c.visibleProperty());
+        this.c.managedProperty().bind(this.c.visibleProperty());
     }
 
     public void setVisible() {
         this.c.setVisible(true);
-        this.c.managedProperty().bind(c.visibleProperty());
+        this.c.managedProperty().bind(this.c.visibleProperty());
     }
 
 }
