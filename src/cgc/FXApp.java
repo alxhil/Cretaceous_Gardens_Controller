@@ -32,6 +32,7 @@ import astation.AutomatedStation;
 import cgc.Cgc;
 import guest.Guest;
 import vehicle.Vehicle;
+import cgc.AppUpdate;
 
 import java.awt.*;
 import java.io.FileInputStream;
@@ -54,8 +55,6 @@ public class FXApp extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
-
 
 
     public void zoneStart() {
@@ -173,12 +172,8 @@ public class FXApp extends Application {
         treePane.setRight(tree4);
         treePane.setCenter(tree5);
 
-
         BorderPane.setAlignment(tree1, Pos.CENTER);
         BorderPane.setAlignment(tree2, Pos.CENTER);
-
-
-
 
         return treePane;
 
@@ -211,7 +206,12 @@ public class FXApp extends Application {
             public void handle(KeyEvent ke) {
                 if (ke.getCode() == KeyCode.V) {
                     DEBUGSTART = true;
+                } else if (ke.getCode() == KeyCode.E) {
+                    controller.handleEvent(new AppUpdate(true));
+                } else if (ke.getCode() == KeyCode.R) {
+                    controller.handleEvent(new AppUpdate(false));
                 }
+
             }
         });
         startUp();
@@ -226,8 +226,16 @@ public class FXApp extends Application {
     }
 
     public void testLoop() {
-
+        // In case the security system goes down,
+        // in a real implementation this would be done in the security
+        // systems event loop
+        controller.getSecuritySystem().sendStatus();
+        for (AutomatedStation station : controller.getStations()) {
+            station.sendStatus();
+        }
         for (Vehicle v : controller.getVehicles()) {
+            // Currently a noop
+            v.sendStatus();
             if(v.isMoving()) {
                 h += .01;
 

@@ -72,4 +72,7 @@ public class Guest {
         this.c.managedProperty().bind(this.c.visibleProperty());
     }
 
+    // Noop for now, but eventually may want to behave differently
+    public void setEmergency(boolean emergency){};
+
 }

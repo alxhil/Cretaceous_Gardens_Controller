@@ -13,6 +13,16 @@ public class SecuritySystem implements Resource {
     private boolean emergency;
     private VoltageMonitor monitor;
 
+    public class SecurityUpdate {
+        public final float voltage;
+        public final boolean aliceVisible;
+
+        public SecurityUpdate(float voltage, boolean aliceVisible){
+            this.voltage = voltage;
+            this.aliceVisible = aliceVisible;
+        }
+    }
+
     public SecuritySystem(Cgc controller) {
         this.emergency = false;
         this.monitor = new VoltageMonitor();
@@ -20,7 +30,8 @@ public class SecuritySystem implements Resource {
     }
 
     public boolean sendStatus() {
-        throw new UnsupportedOperationException();
+        this.controller.handleEvent(new SecurityUpdate(this.monitor.getVoltage(), true));
+        return true;
     }
 
     public void setEmergency(boolean emergency) {

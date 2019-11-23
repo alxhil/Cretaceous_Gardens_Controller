@@ -50,9 +50,7 @@ public class Vehicle implements Resource {
         this.move(p.getX(), p.getY());
     }
 
-    public boolean sendStatus(){
-        throw new UnsupportedOperationException();
-    }
+    public boolean sendStatus(){return true;}
 
     public void setEmergency(boolean emergency){
         this.emergency = emergency;
@@ -111,6 +109,9 @@ public class Vehicle implements Resource {
     }
 
     public void move(double x, double y){
+        if (this.emergency) {
+            return;
+        }
         this.location.setLocation(x,y);
         this.r.setTranslateX(x);
         this.r.setTranslateY(y);
@@ -156,6 +157,9 @@ public class Vehicle implements Resource {
     }
 
     public void rotateVehicle(double d) {
+        if (this.emergency) {
+            return;
+        }
         double centerX = this.r.getX() + this.r.getWidth() / 2;
         double centerY = this.r.getY() + this.r.getWidth() / 2;
         Rotate rotate = new Rotate(d, centerX, centerY);
