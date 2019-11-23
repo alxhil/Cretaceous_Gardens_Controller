@@ -12,21 +12,11 @@ public class SecuritySystem implements Resource {
     private Cgc controller;
     private boolean emergency;
     private VoltageMonitor monitor;
-    private LinkedList<Fence> fenceList;
 
     public SecuritySystem(Cgc controller) {
         this.emergency = false;
         this.monitor = new VoltageMonitor();
         this.controller = controller;
-        this.fenceList = new LinkedList<>();
-    }
-
-    public void pushFence(Fence fence) {
-        this.fenceList.push(fence);
-    }
-
-    public LinkedList<Fence> getFences() {
-        return this.fenceList;
     }
 
     public boolean sendStatus() {
