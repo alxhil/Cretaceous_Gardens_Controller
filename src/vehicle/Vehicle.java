@@ -24,7 +24,7 @@ public class Vehicle implements Resource {
     private boolean isFull;
     private Text text;
     private Point location;
-    private String number;
+    private UUID identifier;
     private Rectangle r;
     private LinkedList<Guest> guestsInVehicle;
 
@@ -45,8 +45,9 @@ public class Vehicle implements Resource {
         this.currentCapacity = 0;
         this.isMoving = false;
         this.isFull = false;
-        this.number = Math.random()*1000+"";
+        this.identifier = UUID.randomUUID();
         this.emergency = false;
+        this.move(p.getX(), p.getY());
     }
 
     public boolean sendStatus(){
@@ -62,7 +63,7 @@ public class Vehicle implements Resource {
             this.currentCapacity++;
             checkCapacity();
         } else {
-            System.out.println("Max Capacity Reached already Car number" + this.number);
+            System.out.println("Max Capacity Reached already Car identifier: " + this.identifier);
         }
     }
 

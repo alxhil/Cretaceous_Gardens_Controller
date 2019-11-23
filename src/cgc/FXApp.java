@@ -84,9 +84,7 @@ public class FXApp extends Application {
 
         Image carImage = new Image(new FileInputStream("static/img/sideViewCar.png"));
 
-
-        Vehicle v = new Vehicle(new Point(10, 10), carImage);
-        v.move(Math.cos(4.71), Math.sin(4.71));
+        Vehicle v = new Vehicle(Zone.DefaultZone.PARKING_SOUTH.getRandomPoint(), carImage);
         controller.register(v);
 
 

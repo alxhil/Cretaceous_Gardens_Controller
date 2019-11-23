@@ -39,6 +39,12 @@ public class Zone {
 
         public int getWidth(){return this.width;}
 
+        public Point getRandomPoint() {
+            double x = this.location.getX();
+            double y = this.location.getY();
+            return new Point((int)(x+ (Math.random() * this.width)), (int) y);
+        }
+
     }
 
     public Zone(Point p, int width, int height, String name) {

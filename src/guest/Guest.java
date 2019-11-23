@@ -20,7 +20,7 @@ public class Guest {
         this.inVehicle = false;
         this.c = new Circle(0, 0, 9);
         this.draw = true;
-        this.uuid = new UUID(123456789,123456789);
+        this.uuid = UUID.randomUUID();
     }
 
     public UUID getUUID() {

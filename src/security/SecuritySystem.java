@@ -33,6 +33,5 @@ public class SecuritySystem implements Resource {
     }
 
     // Its a noop in the simulation
-    private void triggerTranquilizer() {
-    }
+    private void triggerTranquilizer() {}
 }
