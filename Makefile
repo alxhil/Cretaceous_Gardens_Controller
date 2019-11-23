@@ -1,6 +1,6 @@
 
 run:
-	cd src/ && java cgc.FXApp
+	java -cp src/ cgc.FXApp
 
 build:
 	cd src/ && javac cgc/FXApp.java
