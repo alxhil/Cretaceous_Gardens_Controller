@@ -75,9 +75,7 @@ public class Zone {
     public Point getRandomPoint() {
         double xZ = this.r.getX();
         double yZ = this.r.getY();
-
         double wZ = this.r.getWidth();
-
         return new Point((int)(xZ+ (Math.random()*wZ)), (int) yZ);
 
     }

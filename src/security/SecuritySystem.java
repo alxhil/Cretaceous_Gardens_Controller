@@ -21,27 +21,22 @@ public class SecuritySystem implements Resource {
             this.aliceVisible = aliceVisible;
         }
     }
-
     public SecuritySystem(Cgc controller) {
         this.emergency = false;
         this.monitor = new VoltageMonitor();
         this.controller = controller;
     }
-
     public boolean sendStatus() {
         this.controller.handleEvent(new SecurityUpdate(this.monitor.getVoltage(), true));
         return true;
     }
-
     public void setEmergency(boolean emergency) {
         this.emergency = emergency;
         this.triggerTranquilizer();
     }
-
     public void playAudio(String filePath) {
         // Open file and play it
     }
-
     // Its a noop in the simulation
     private void triggerTranquilizer() {}
 }

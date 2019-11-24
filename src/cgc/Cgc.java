@@ -95,11 +95,11 @@ public class Cgc{
         }
         System.out.printf("CGC transitioning to emergency: %b\n", emergency);
         this.emergency = emergency;
-        for (Guest g : this.guestList) {
-            g.setEmergency(emergency);
+        for (Guest guest : this.guestList) {
+            guest.setEmergency(emergency);
         }
-        for (Vehicle v : this.vehicleList) {
-            v.setEmergency(emergency);
+        for (Vehicle vehicle : this.vehicleList) {
+            vehicle.setEmergency(emergency);
         }
         for (AutomatedStation station : this.stationList){
             station.setEmergency(emergency);

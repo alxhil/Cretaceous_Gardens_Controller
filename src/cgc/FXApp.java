@@ -77,16 +77,12 @@ public class FXApp extends Application {
 
     }
 
-
-
     public void startUp() throws FileNotFoundException {
 
         Image carImage = new Image(new FileInputStream("static/img/sideViewCar.png"));
 
-        Vehicle v = new Vehicle(Zone.DefaultZone.PARKING_SOUTH.getRandomPoint(), carImage);
-        controller.register(v);
-
-
+        Vehicle vehicle = new Vehicle(Zone.DefaultZone.PARKING_SOUTH.getRandomPoint(), carImage);
+        controller.register(vehicle);
 
         // Trees are on the border pane
         // getTreePane method give borderPane with trees
@@ -127,7 +123,6 @@ public class FXApp extends Application {
         StackPane.setAlignment(payStationImage, Pos.BOTTOM_RIGHT);
         StackPane.setMargin(payStationImage, new Insets(200,100,200,150));
 
-
         root.getChildren().addAll(
             grassImage,
             longTreePane,
@@ -136,12 +131,9 @@ public class FXApp extends Application {
             trexImage,
             fenceImage,
             payStationImage,
-            v.getShape(),
-            v.getText()
+                vehicle.getShape(),
+                vehicle.getText()
         );
-
-
-
     }
 
     /**
@@ -153,7 +145,6 @@ public class FXApp extends Application {
      */
     public BorderPane getTreePane(String imageName) throws FileNotFoundException {
         BorderPane treePane = new BorderPane();
-
 
         ImageView tree1 = new ImageView(new Image(new FileInputStream(imageName)));
         tree1.setFitHeight(50);
@@ -233,15 +224,15 @@ public class FXApp extends Application {
         for (AutomatedStation station : controller.getStations()) {
             station.sendStatus();
         }
-        for (Vehicle v : controller.getVehicles()) {
+        for (Vehicle vehicle : controller.getVehicles()) {
             // Currently a noop
-            v.sendStatus();
-            if(v.isMoving()) {
+            vehicle.sendStatus();
+            if(vehicle.isMoving()) {
                 h += .01;
 
-                v.move(-Math.cos(h) * 2*RATIO, -Math.sin(h) *2* RATIO);
+                vehicle.move(-Math.cos(h) * 2*RATIO, -Math.sin(h) *2* RATIO);
                 // Hacky hand-tuned parameter for rotating
-                v.rotateVehicle(0.57);
+                vehicle.rotateVehicle(0.57);
                continue;
 
             }
@@ -255,9 +246,9 @@ public class FXApp extends Application {
             //     root.getChildren().add(g.getShape());
             // }
             for(Guest guest : controller.getGuests()) {
-                pathFinding(guest, v.getLocation());
-                if(guest.getIntersection(v) && !guest.isInVehicle()){
-                    v.addToVehicle(guest);
+                pathFinding(guest, vehicle.getLocation());
+                if(guest.getIntersection(vehicle) && !guest.isInVehicle()){
+                    vehicle.addToVehicle(guest);
                     guest.setInvisible();
                 }
             }
@@ -265,11 +256,11 @@ public class FXApp extends Application {
 
     }
 
-    public void pathFinding(Guest g, Point p) {
-        double x1 = g.getShape().getTranslateX();
-        double y1 = g.getShape().getTranslateY();
-        double x2 = p.getX();
-        double y2 = p.getY();
+    public void pathFinding(Guest guest, Point point) {
+        double x1 = guest.getShape().getTranslateX();
+        double y1 = guest.getShape().getTranslateY();
+        double x2 = point.getX();
+        double y2 = point.getY();
         double distance = distance(x1,x2,y1,y2);
 
         double xSlope = 0;
@@ -291,7 +282,7 @@ public class FXApp extends Application {
         } else {
             xSlope = -.1;
         }
-        g.move(x1 + (distance * xSlope), y1 + (distance * ySlope));
+        guest.move(x1 + (distance * xSlope), y1 + (distance * ySlope));
 
     }
 

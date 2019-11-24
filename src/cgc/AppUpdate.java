@@ -6,7 +6,6 @@ package cgc;
 public class AppUpdate {
 
     public final boolean emergency;
-
     public AppUpdate(boolean emergency){
         this.emergency = emergency;
     }
