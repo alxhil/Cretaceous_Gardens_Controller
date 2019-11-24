@@ -21,6 +21,9 @@ public class SecuritySystem implements Resource {
             this.aliceVisible = aliceVisible;
         }
     }
+    public SecuritySystem(){
+
+    }
     public SecuritySystem(Cgc controller) {
         this.emergency = false;
         this.monitor = new VoltageMonitor();
@@ -33,6 +36,16 @@ public class SecuritySystem implements Resource {
     public void setEmergency(boolean emergency) {
         this.emergency = emergency;
         this.triggerTranquilizer();
+    }
+
+    public boolean isEmergency(boolean camera, float vMonitor)
+    {
+        boolean isEmergencyOn =  false;
+        if(camera == true|| vMonitor == 0)
+        {
+            isEmergencyOn = true;
+        }
+        return isEmergencyOn;
     }
     public void playAudio(String filePath) {
         // Open file and play it

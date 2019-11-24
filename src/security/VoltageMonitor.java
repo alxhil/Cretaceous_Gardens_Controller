@@ -17,5 +17,9 @@ public class VoltageMonitor{
     public void enable(){
         this.voltage = 2.5f;
     }
-    //testing
+    public float voltageOff(){
+
+        return this.voltage = 0.0f;
+    }
+
 }
