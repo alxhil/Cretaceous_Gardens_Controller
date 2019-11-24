@@ -3,7 +3,6 @@ package security;
 import cgc.Cgc;
 import interfaces.Resource;
 import security.VoltageMonitor;
-
 import java.lang.UnsupportedOperationException;
 import java.util.LinkedList;
 
