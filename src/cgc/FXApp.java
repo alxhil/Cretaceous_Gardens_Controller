@@ -23,9 +23,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.TriangleMesh;
+import javafx.scene.shape.Shape;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -34,6 +32,7 @@ import astation.AutomatedStation;
 import cgc.Cgc;
 import guest.Guest;
 import vehicle.Vehicle;
+import cgc.AppUpdate;
 
 import java.awt.*;
 import java.io.FileInputStream;
@@ -58,36 +57,32 @@ public class FXApp extends Application {
     }
 
 
-
-
     public void zoneStart() {
 
         /**
-         * Zone Order : PARKING_SOUTH_END, PARKING_NORTH_END,
-         *              VISITOR_SOUTH_END, VISITOR_TREX_EXHIBIT
+         * Zone Order : PARKING_SOUTH, PARKING_NORTH,
+         *              SOUTH_END, EXHIBIT, refer to Zone.DefaultZone Enum
          * ZONES BEING COLORED ON THE GUI IS TEMPRORARY, JUST FOR DEBUGGING PURPOSES AT THE MOMENT
          */
-        Zone[] zA = {  new Zone(new Point(400,510), "parking") , new Zone(new Point(400, 350), "parking"),
-                new Zone(new Point(400, 600), "visitor"),  new Zone(new Point(400,250), "visitor") };
-        for(Zone z : zA){
-            root.getChildren().add(z.getR());
-            z.getR().toFront();
+        for(Zone.DefaultZone defZone : Zone.DefaultZone.values()){
+            Zone zone = new Zone(
+                defZone.getLocation(),
+                defZone.getWidth(),
+                defZone.getHeight(),
+                defZone.name()
+            );
+            root.getChildren().add(zone.getShape());
+            zone.getShape().toFront();
         }
 
     }
-
-
 
     public void startUp() throws FileNotFoundException {
 
         Image carImage = new Image(new FileInputStream("static/img/sideViewCar.png"));
 
-
-        Vehicle v = new Vehicle(new Point(10, 10),carImage);
-        v.move(Math.cos(4.71), Math.sin(4.71));
-        controller.registerResource(v);
-
-
+        Vehicle vehicle = new Vehicle(Zone.DefaultZone.PARKING_SOUTH.getRandomPoint(), carImage);
+        controller.register(vehicle);
 
         // Trees are on the border pane
         // getTreePane method give borderPane with trees
@@ -101,8 +96,8 @@ public class FXApp extends Application {
 
         ImageView pathImage = new ImageView(new Image(new FileInputStream("static/img/circularRoad.png")));
 
-        pathImage.setFitWidth(6*RATIO);
-        pathImage.setFitHeight(4*RATIO);
+        pathImage.setFitWidth(5*RATIO);
+        pathImage.setFitHeight(5*RATIO);
         StackPane.setAlignment(pathImage, Pos.CENTER);
 
         ImageView grassImage = new ImageView(new Image(new FileInputStream("static/img/Grass.jpg")));
@@ -128,12 +123,17 @@ public class FXApp extends Application {
         StackPane.setAlignment(payStationImage, Pos.BOTTOM_RIGHT);
         StackPane.setMargin(payStationImage, new Insets(200,100,200,150));
 
-
-        root.getChildren().addAll(grassImage,longTreePane,shortTreePane,pathImage,trexImage,
-                fenceImage,payStationImage,v.getR(), v.getText());
-
-
-
+        root.getChildren().addAll(
+            grassImage,
+            longTreePane,
+            shortTreePane,
+            pathImage,
+            trexImage,
+            fenceImage,
+            payStationImage,
+                vehicle.getShape(),
+                vehicle.getText()
+        );
     }
 
     /**
@@ -145,7 +145,6 @@ public class FXApp extends Application {
      */
     public BorderPane getTreePane(String imageName) throws FileNotFoundException {
         BorderPane treePane = new BorderPane();
-
 
         ImageView tree1 = new ImageView(new Image(new FileInputStream(imageName)));
         tree1.setFitHeight(50);
@@ -164,12 +163,8 @@ public class FXApp extends Application {
         treePane.setRight(tree4);
         treePane.setCenter(tree5);
 
-
         BorderPane.setAlignment(tree1, Pos.CENTER);
         BorderPane.setAlignment(tree2, Pos.CENTER);
-
-
-
 
         return treePane;
 
@@ -188,20 +183,26 @@ public class FXApp extends Application {
                 int mouseX = (int) mouseEvent.getSceneX();
                 int mouseY = (int) mouseEvent.getSceneY();
                 //System.out.println("Mouse x: "+mouseX+" Mouse y: "+mouseY);
-                Guest g = new Guest(new Point(mouseX,mouseY));
-                g.move(mouseX,mouseY);
-                System.out.println("Placed at ("+ g.getLocation().getX()+" ,"+ g.getLocation().getY()+")");
+                Guest g = new Guest(new Point(mouseX, mouseY));
+                g.move(mouseX, mouseY);
+                System.out.println("Placed at (" + mouseX + " ," + mouseY + ")");
                 controller.registerGuest(g);
-                root.getChildren().add(g.getC());
-                g.getC().setTranslateX(mouseX);
-                g.getC().setTranslateY(mouseY);
+                Shape visitorShape = g.getShape();
+                root.getChildren().add(visitorShape);
+                visitorShape.setTranslateX(mouseX);
+                visitorShape.setTranslateY(mouseY);
             }
         });
         primaryStage.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             public void handle(KeyEvent ke) {
                 if (ke.getCode() == KeyCode.V) {
                     DEBUGSTART = true;
+                } else if (ke.getCode() == KeyCode.E) {
+                    controller.handleEvent(new AppUpdate(true));
+                } else if (ke.getCode() == KeyCode.R) {
+                    controller.handleEvent(new AppUpdate(false));
                 }
+
             }
         });
         startUp();
@@ -216,55 +217,49 @@ public class FXApp extends Application {
     }
 
     public void testLoop() {
-
-        for(Vehicle v : controller.getVehicles()) {
-            //if(v.getLocation().)
+        // In case the security system goes down,
+        // in a real implementation this would be done in the security
+        // systems event loop
+        controller.getSecuritySystem().sendStatus();
+        for (AutomatedStation station : controller.getStations()) {
+            station.sendStatus();
         }
-
-        for (Vehicle v : controller.getVehicles()) {
-            if(v.isMoving()) {
+        for (Vehicle vehicle : controller.getVehicles()) {
+            // Currently a noop
+            vehicle.sendStatus();
+            if(vehicle.isMoving()) {
                 h += .01;
+
                 //System.out.println("moving");
 
-                v.move(-Math.cos(h) * 2*RATIO, -Math.sin(h) *2* RATIO);
+                vehicle.move(-Math.cos(h) * 2*RATIO, -Math.sin(h) *2* RATIO);
                 //v.rotateVehicle(Math.asin(-h));
 
+
+                vehicle.move(-Math.cos(h) * 2*RATIO, -Math.sin(h) *2* RATIO);
+                // Hacky hand-tuned parameter for rotating
+                vehicle.rotateVehicle(0.57);
                continue;
 
             }
 
 
-
-
-            if(DEBUGSTART){
-                int rX = (int) (Math.random()*999);
-                int rY = (int) (Math.random()*999);
-                Guest g = new Guest(new Point(rX, rY));
-                controller.registerGuest(g);
-                g.move(rX,rY);
-                root.getChildren().add(g.getC());
-            }
             for(Guest guest : controller.getGuests()) {
-                pathFinding(guest, v.getLocation());
-            }
-
-            for(Guest guest : controller.getGuests()) {
-                if(guest.getIntersection(v) && !guest.isInVehicle()){
-                    v.addToVehicle(guest);
+                pathFinding(guest, vehicle.getLocation());
+                if(guest.getIntersection(vehicle) && !guest.isInVehicle()){
+                    vehicle.addToVehicle(guest);
                     guest.setInvisible();
                 }
             }
-
         }
 
     }
 
-    public void pathFinding(Guest g, Point p) {
-
-        double x1 = g.getC().getTranslateX();
-        double y1 = g.getC().getTranslateY();
-        double x2 = p.getX();
-        double y2 = p.getY();
+    public void pathFinding(Guest guest, Point point) {
+        double x1 = guest.getShape().getTranslateX();
+        double y1 = guest.getShape().getTranslateY();
+        double x2 = point.getX();
+        double y2 = point.getY();
         double distance = distance(x1,x2,y1,y2);
 
         double xSlope = 0;
@@ -286,17 +281,11 @@ public class FXApp extends Application {
         } else {
             xSlope = -.1;
         }
-        //System.out.println("x1: " +x1+" y1: "+y1 +" x2: "+x2+" y2: "+y2);
-        //System.out.println("xSlope: " +xSlope+" ySlope: "+ySlope);
-        //System.out.println("moving to (" +(g.getC().getTranslateX() +( (distance) * xSlope))+") , ("+(g.getC().getTranslateY() + ((distance) * ySlope)) );
-        g.move(g.getC().getTranslateX() +( (distance) * xSlope), g.getC().getTranslateY() + ((distance) * ySlope));
+        guest.move(x1 + (distance * xSlope), y1 + (distance * ySlope));
 
     }
 
     public double distance(double x1, double x2, double y1, double y2){
         return Math.sqrt(((y2 - y1) * (y2 - y1)) + ((x2 - x1) * (x2 - x1)));
     }
-
-
-
 }

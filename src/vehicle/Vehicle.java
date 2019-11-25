@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 
 import java.io.FileInputStream;
@@ -23,13 +24,10 @@ public class Vehicle implements Resource {
     private boolean isFull;
     private Text text;
     private Point location;
-    private String number;
+    private UUID identifier;
     private Rectangle r;
     private LinkedList<Guest> guestsInVehicle;
 
-    public Rectangle getRectangle(){
-        return r;
-    }
 
     private boolean emergency;
 
@@ -47,13 +45,12 @@ public class Vehicle implements Resource {
         this.currentCapacity = 0;
         this.isMoving = false;
         this.isFull = false;
-        this.number = Math.random()*1000+"";
+        this.identifier = UUID.randomUUID();
         this.emergency = false;
+        this.move(p.getX(), p.getY());
     }
 
-    public boolean sendStatus(){
-        throw new UnsupportedOperationException();
-    }
+    public boolean sendStatus(){return true;}
 
     public void setEmergency(boolean emergency){
         this.emergency = emergency;
@@ -64,7 +61,7 @@ public class Vehicle implements Resource {
             this.currentCapacity++;
             checkCapacity();
         } else {
-            System.out.println("Max Capacity Reached already Car number"+this.number);
+            System.out.println("Max Capacity Reached already Car identifier: " + this.identifier);
         }
     }
 
@@ -112,18 +109,21 @@ public class Vehicle implements Resource {
     }
 
     public void move(double x, double y){
+        if (this.emergency) {
+            return;
+        }
         this.location.setLocation(x,y);
         this.r.setTranslateX(x);
         this.r.setTranslateY(y);
         this.text.setTranslateX(x+3);
-        this.text.setTranslateY(y+20);
+        this.text.setTranslateY(y + this.r.getWidth());
     }
 
     public Point getLocation() {
         return this.location.getLocation();
     }
 
-    public Rectangle getR() {
+    public Shape getShape() {
         return this.r;
     }
 
@@ -157,7 +157,12 @@ public class Vehicle implements Resource {
     }
 
     public void rotateVehicle(double d) {
-        Rotate rotate = new Rotate(d, 0,0);
+        if (this.emergency) {
+            return;
+        }
+        double centerX = this.r.getX() + this.r.getWidth() / 2;
+        double centerY = this.r.getY() + this.r.getWidth() / 2;
+        Rotate rotate = new Rotate(d, centerX, centerY);
         this.r.getTransforms().add(rotate);
 
     }

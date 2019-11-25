@@ -19,7 +19,7 @@ public class AutomatedStation implements Resource {
     private boolean emergency;
 
     public boolean sendStatus(){
-        throw new UnsupportedOperationException();
+        return true;
     }
 
     private void registerVisitor(Guest guest){
