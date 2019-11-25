@@ -227,7 +227,7 @@ public class FXApp extends Application {
                 //System.out.println("moving");
 
                 v.move(-Math.cos(h) * 2*RATIO, -Math.sin(h) *2* RATIO);
-                v.rotateVehicle(Math.asin(-h));
+                //v.rotateVehicle(Math.asin(-h));
 
                continue;
 

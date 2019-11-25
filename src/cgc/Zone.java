@@ -11,12 +11,14 @@ public class Zone {
     private Rectangle r;
     private boolean visitorZone;
     private boolean parkingZone;
+    private String s;
 
     public Zone(Point p, String s) {
         this.r = new Rectangle(p.getX(), p.getY(), 100, 40);
         this.r.toBack();
         this.visitorZone = false;
         this.parkingZone = false;
+        this.s = s;
         if(s.equalsIgnoreCase("parking")){
             this.parkingZone = true;
             this.r.setFill(Color.RED);
@@ -45,6 +47,10 @@ public class Zone {
 
     public Rectangle getR(){
         return this.r;
+    }
+
+    public String getMode() {
+        return this.s;
     }
 
 }

@@ -1,6 +1,7 @@
 package guest;
 
 
+import cgc.Zone;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import vehicle.Vehicle;
@@ -44,6 +45,10 @@ public class Guest {
      */
     public Boolean getIntersection(Vehicle v) {
         return this.c.getBoundsInParent().intersects(v.getR().getBoundsInParent());
+    }
+
+    public Boolean getIntersection(Zone z) {
+        return this.c.getBoundsInParent().intersects(z.getR().getBoundsInParent());
     }
 
     public Circle getC (){
