@@ -73,11 +73,13 @@ public class Vehicle implements Resource {
      */
     public void vehicleText(){
         this.text = new Text(0, 0, "0");
-        this.text.setFont(Font.font("Verdana", 20));
+        this.text.setFont(Font.font("Alatsi", 20));
         this.text.setStroke(Color.WHITE);
+        this.text.setFill(Color.BLACK);
         this.timerText = new Text(0, 0, "0");
-        this.timerText.setFont(Font.font("Verdana", 20));
-        this.timerText.setStroke(Color.RED);
+        this.timerText.setFont(Font.font("Didact Gothic", 20));
+        this.timerText.setStroke(Color.WHITE);
+        this.timerText.setFill(Color.SKYBLUE);
     }
 
 
@@ -125,7 +127,7 @@ public class Vehicle implements Resource {
 
 
     public void checkCapacity() {
-        if((this.currentCapacity == 10) || (this.second >= 15)) {
+        if((this.currentCapacity == 10) || ((this.second >= 15) && this.currentCapacity > 0)) {
             this.isFull = true;
             this.isMoving = true;
         } else {
@@ -142,10 +144,10 @@ public class Vehicle implements Resource {
         this.location.setLocation(x,y);
         this.rectangle.setTranslateX(x);
         this.rectangle.setTranslateY(y);
-        this.text.setTranslateX(x+3);
-        this.text.setTranslateY(y + this.rectangle.getWidth());
-        this.timerText.setTranslateX(x + 15);
-        this.timerText.setTranslateY(y);
+        this.text.setTranslateX(x);
+        this.text.setTranslateY(y);
+        this.timerText.setTranslateX(x);
+        this.timerText.setTranslateY(y + 50);
     }
 
     public Point getLocation() {

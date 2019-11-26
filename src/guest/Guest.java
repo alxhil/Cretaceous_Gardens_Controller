@@ -2,6 +2,7 @@ package guest;
 
 
 import cgc.Zone;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 import vehicle.Vehicle;
@@ -24,6 +25,8 @@ public class Guest {
         this.tick = 0;
         this.second = 0;
         this.circle = new Circle(0, 0, 9);
+        this.circle.setStroke(Color.WHITE);
+        this.circle.setFill(Color.PURPLE);
         this.uuid = UUID.randomUUID();
     }
 

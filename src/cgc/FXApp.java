@@ -52,6 +52,7 @@ public class FXApp extends Application {
 
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+        primaryStage.setResizable(false);
         primaryStage.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -159,7 +160,7 @@ public class FXApp extends Application {
                 } else if (vehicle.getIntersection(zone) && !vehicle.isMoving() && zone.getName().equalsIgnoreCase("parking_north")
                         && vehicle.getSecond() > 10 && !vehicle.getIntermission()) {
 
-                    System.out.println("Hi");
+
                     vehicle.setIntermission();
                     vehicle.resetSecond();
                     for (Guest guest : controller.getGuests()) {
@@ -251,25 +252,31 @@ public class FXApp extends Application {
     public BorderPane getTreePane(String imageName) throws FileNotFoundException {
         BorderPane treePane = new BorderPane();
 
-        ImageView tree1 = new ImageView(new Image(new FileInputStream(imageName)));
-        tree1.setFitHeight(50);
-        ImageView tree2 = new ImageView(new Image(new FileInputStream(imageName)));
-        tree2.setFitHeight(50);
-        ImageView tree3 = new ImageView(new Image(new FileInputStream(imageName)));
-        tree3.setFitHeight(50);
-        ImageView tree4 = new ImageView(new Image(new FileInputStream(imageName)));
-        tree4.setFitHeight(50);
-        ImageView tree5 = new ImageView(new Image(new FileInputStream(imageName)));
-        tree5.setFitHeight(50);
+        ImageView tree1 = new ImageView(new Image(new FileInputStream(imageName))) ,
+                tree2 = new ImageView(new Image(new FileInputStream(imageName))) ,
+                tree3 = new ImageView(new Image(new FileInputStream(imageName))) ,
+                tree4 = new ImageView(new Image(new FileInputStream(imageName))) ,
+                tree5 = new ImageView(new Image(new FileInputStream(imageName)));
+        tree1.setFitHeight(75);
+        tree2.setFitHeight(75);
+        tree3.setFitHeight(75);
+        tree4.setFitHeight(75);
+        tree5.setFitHeight(75);
+        tree1.setFitWidth(75);
+        tree2.setFitWidth(75);
+        tree3.setFitWidth(75);
+        tree4.setFitWidth(75);
+        tree5.setFitWidth(75);
 
+        /*
         treePane.setTop(tree1);
         treePane.setBottom(tree2);
         treePane.setLeft(tree3);
         treePane.setRight(tree4);
         treePane.setCenter(tree5);
-
-        BorderPane.setAlignment(tree1, Pos.CENTER);
-        BorderPane.setAlignment(tree2, Pos.CENTER);
+        */
+        //BorderPane.setAlignment(tree1, Pos.CENTER);
+        //BorderPane.setAlignment(tree2, Pos.CENTER);
 
         return treePane;
 
@@ -277,7 +284,7 @@ public class FXApp extends Application {
 
     public void startUp() throws FileNotFoundException {
 
-        Image carImage = new Image(new FileInputStream("static/img/sideViewCar.png"));
+        Image carImage = new Image(new FileInputStream("static/img/car.png"));
 
         Vehicle vehicle = new Vehicle(Zone.DefaultZone.PARKING_SOUTH.getRandomPoint(), carImage);
         controller.register(vehicle);
@@ -287,11 +294,11 @@ public class FXApp extends Application {
 
         BorderPane longTreePane = getTreePane("static/img/longTree.png");
         StackPane.setAlignment(longTreePane,Pos.CENTER_LEFT);
-        StackPane.setMargin(longTreePane, new Insets(300,50,650,550));
+        StackPane.setMargin(longTreePane, new Insets(300,50,650,650));
 
         BorderPane shortTreePane = getTreePane("static/img/shortTree.png");
         StackPane.setAlignment(shortTreePane,Pos.CENTER_RIGHT);
-        StackPane.setMargin(shortTreePane, new Insets(300,550,650,50));
+        StackPane.setMargin(shortTreePane, new Insets(50,600,50,0));
 
         ImageView pathImage = new ImageView(new Image(new FileInputStream("static/img/circularRoad.png")));
 
@@ -299,7 +306,7 @@ public class FXApp extends Application {
         pathImage.setFitHeight(5*RATIO);
         StackPane.setAlignment(pathImage, Pos.CENTER);
 
-        ImageView grassImage = new ImageView(new Image(new FileInputStream("static/img/Grass.jpg")));
+        ImageView grassImage = new ImageView(new Image(new FileInputStream("static/img/Grass.png")));
         grassImage.setFitWidth(900);
         grassImage.setFitHeight(900);
 
@@ -317,10 +324,16 @@ public class FXApp extends Application {
         StackPane.setMargin(fenceImage, new Insets(50));
 
         ImageView payStationImage = new ImageView(new Image(new FileInputStream("static/img/payStation.png")));
-        payStationImage.setFitWidth(150);
-        payStationImage.setFitHeight(150);
-        StackPane.setAlignment(payStationImage, Pos.BOTTOM_RIGHT);
-        StackPane.setMargin(payStationImage, new Insets(200,100,200,150));
+        payStationImage.setFitWidth(50);
+        payStationImage.setFitHeight(50);
+        StackPane.setAlignment(payStationImage, Pos.BOTTOM_CENTER);
+        StackPane.setMargin(payStationImage, new Insets(0,0,100,0));
+
+        ImageView waterImage = new ImageView(new Image(new FileInputStream("static/img/water.png")));
+        waterImage.setFitWidth(200);
+        waterImage.setFitHeight(200);
+        StackPane.setAlignment(waterImage, Pos.CENTER);
+        StackPane.setMargin(waterImage, new Insets(50));
 
         root.getChildren().addAll(
                 grassImage,
@@ -330,6 +343,7 @@ public class FXApp extends Application {
                 trexImage,
                 fenceImage,
                 payStationImage,
+                //waterImage,
                 vehicle.getShape(),
                 vehicle.getText(),
                 vehicle.getTimerText()
