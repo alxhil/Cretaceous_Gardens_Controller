@@ -25,7 +25,7 @@ public class Vehicle implements Resource {
     private Text text;
     private Point location;
     private UUID identifier;
-    private Rectangle r;
+    private Rectangle rectangle;
     private LinkedList<Guest> guestsInVehicle;
 
 
@@ -35,19 +35,19 @@ public class Vehicle implements Resource {
      *
      *
      */
-    public Vehicle(Point p, Image carImage) throws FileNotFoundException {
+    public Vehicle(Point point, Image carImage) throws FileNotFoundException {
         this.text = new Text(0, 0, "0");
         this.guestsInVehicle = new LinkedList<Guest>();
-        this.r = new Rectangle(50,50);
-        this.r.setFill(new ImagePattern(carImage));
+        this.rectangle = new Rectangle(50,50);
+        this.rectangle.setFill(new ImagePattern(carImage));
 
-        this.location = p;
+        this.location = point;
         this.currentCapacity = 0;
         this.isMoving = false;
         this.isFull = false;
         this.identifier = UUID.randomUUID();
         this.emergency = false;
-        this.move(p.getX(), p.getY());
+        this.move(point.getX(), point.getY());
     }
 
     public boolean sendStatus(){return true;}
@@ -56,7 +56,7 @@ public class Vehicle implements Resource {
         this.emergency = emergency;
     }
 
-    void increaseCapacity() {
+    public void increaseCapacity() {
         if (this.currentCapacity < 10) {
             this.currentCapacity++;
             checkCapacity();
@@ -70,8 +70,8 @@ public class Vehicle implements Resource {
      *
      * @return  Returns true if LinkedList from parameter has guest from parameter, else return false.
      */
-    Boolean validate(Guest g, LinkedList<UUID> uuid){
-        if(uuid.contains(g.getUUID())){
+    Boolean validate(Guest guest, LinkedList<UUID> uuid){
+        if(uuid.contains(guest.getUUID())){
             return true;
         } else {
             return false;
@@ -113,10 +113,10 @@ public class Vehicle implements Resource {
             return;
         }
         this.location.setLocation(x,y);
-        this.r.setTranslateX(x);
-        this.r.setTranslateY(y);
+        this.rectangle.setTranslateX(x);
+        this.rectangle.setTranslateY(y);
         this.text.setTranslateX(x+3);
-        this.text.setTranslateY(y + this.r.getWidth());
+        this.text.setTranslateY(y + this.rectangle.getWidth());
     }
 
     public Point getLocation() {
@@ -124,7 +124,7 @@ public class Vehicle implements Resource {
     }
 
     public Shape getShape() {
-        return this.r;
+        return this.rectangle;
     }
 
     public Boolean isMoving() {
@@ -135,39 +135,39 @@ public class Vehicle implements Resource {
         this.isMoving = !this.isMoving;
     }
 
-    public void addToVehicle(Guest g) {
-        if(!g.isInVehicle()) {
-            this.guestsInVehicle.add(g);
+    public void addToVehicle(Guest guest) {
+        if(!guest.isInVehicle()) {
+            this.guestsInVehicle.add(guest);
             increaseCapacity();
             this.text.setText("" + currentCapacity);
-            g.setInVehicle(true);
+            guest.setInVehicle(true);
         } else {
             System.out.println("Already in vehicle");
         }
     }
 
-    public void removeFromVehicle(Guest g) {
+    public void removeFromVehicle(Guest guest) {
         for(Guest carGuest: this.guestsInVehicle){
-            if(g == carGuest) {
-                this.guestsInVehicle.remove(g);
+            if(guest == carGuest) {
+                this.guestsInVehicle.remove(guest);
             } else {
                 System.out.println("Error 2: failed to find in list");
             }
         }
     }
 
-    public void rotateVehicle(double d) {
+    public void rotateVehicle(double doub) {
         if (this.emergency) {
             return;
         }
-        double centerX = this.r.getX() + this.r.getWidth() / 2;
-        double centerY = this.r.getY() + this.r.getWidth() / 2;
-        Rotate rotate = new Rotate(d, centerX, centerY);
-        this.r.getTransforms().add(rotate);
+        double centerX = this.rectangle.getX() + this.rectangle.getWidth() / 2;
+        double centerY = this.rectangle.getY() + this.rectangle.getWidth() / 2;
+        Rotate rotate = new Rotate(doub, centerX, centerY);
+        this.rectangle.getTransforms().add(rotate);
 
     }
 
-    public boolean isOverCapcityDetected() {
+    public boolean isOverCapacityDetected() {
         return this.currentCapacity > 10;
     }
 

@@ -47,7 +47,7 @@ public class Zone {
 
     }
 
-    public Zone(Point p, int width, int height, String name) {
+    public Zone(Point point, int width, int height, String name) {
         this.visitorZone = false;
         this.parkingZone = false;
         this.rectangle = new Rectangle(width, height);
@@ -61,8 +61,8 @@ public class Zone {
             this.rectangle.setFill(Color.BLUE);
         }
         this.rectangle.toBack();
-        this.rectangle.setTranslateX(p.getX());
-        this.rectangle.setTranslateY(p.getY());
+        this.rectangle.setTranslateX(point.getX());
+        this.rectangle.setTranslateY(point.getY());
 
     }
 

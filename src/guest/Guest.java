@@ -17,7 +17,7 @@ public class Guest {
     private Boolean inVehicle;
     private Circle circle;
 
-    public Guest(Point p){
+    public Guest(Point point){
         this.inVehicle = false;
         this.circle = new Circle(0, 0, 9);
         this.draw = true;
@@ -43,8 +43,8 @@ public class Guest {
     /*
     https://gamedev.stackexchange.com/a/79628 thank you
      */
-    public Boolean getIntersection(Vehicle v) {
-        return this.circle.getBoundsInParent().intersects(v.getShape().getBoundsInParent());
+    public Boolean getIntersection(Vehicle vehicle) {
+        return this.circle.getBoundsInParent().intersects(vehicle.getShape().getBoundsInParent());
     }
 
 
