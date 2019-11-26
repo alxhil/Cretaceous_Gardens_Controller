@@ -182,12 +182,11 @@ public class FXApp extends Application {
             public void handle(MouseEvent mouseEvent) {
                 int mouseX = (int) mouseEvent.getSceneX();
                 int mouseY = (int) mouseEvent.getSceneY();
-                //System.out.println("Mouse x: "+mouseX+" Mouse y: "+mouseY);
-                Guest g = new Guest(new Point(mouseX, mouseY));
-                g.move(mouseX, mouseY);
+                Guest guest = new Guest(new Point(mouseX, mouseY));
+                guest.move(mouseX, mouseY);
                 System.out.println("Placed at (" + mouseX + " ," + mouseY + ")");
-                controller.registerGuest(g);
-                Shape visitorShape = g.getShape();
+                controller.registerGuest(guest);
+                Shape visitorShape = guest.getShape();
                 root.getChildren().add(visitorShape);
                 visitorShape.setTranslateX(mouseX);
                 visitorShape.setTranslateY(mouseY);

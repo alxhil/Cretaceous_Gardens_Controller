@@ -56,8 +56,8 @@ public class Guest {
     public Boolean isInVehicle(){
         return this.inVehicle;
     }
-    public void setInVehicle(Boolean b) {
-        this.inVehicle = b;
+    public void setInVehicle(Boolean isInVehicle) {
+        this.inVehicle = isInVehicle;
     }
 
 

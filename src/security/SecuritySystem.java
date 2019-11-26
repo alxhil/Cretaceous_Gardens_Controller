@@ -6,7 +6,7 @@ import security.VoltageMonitor;
 import java.lang.UnsupportedOperationException;
 import java.util.LinkedList;
 
-public class    SecuritySystem implements Resource {
+public class SecuritySystem implements Resource {
 
     private Cgc controller;
     private boolean emergency;

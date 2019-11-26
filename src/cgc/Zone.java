@@ -9,7 +9,7 @@ import java.awt.*;
 
 public class Zone {
 
-    private Rectangle r;
+    private Rectangle rectangle;
     private boolean visitorZone;
     private boolean parkingZone;
 
@@ -50,19 +50,19 @@ public class Zone {
     public Zone(Point p, int width, int height, String name) {
         this.visitorZone = false;
         this.parkingZone = false;
-        this.r = new Rectangle(width, height);
+        this.rectangle = new Rectangle(width, height);
         if(name.toLowerCase().startsWith("parking")){
             this.parkingZone = true;
-            this.r.setFill(Color.RED);
+            this.rectangle.setFill(Color.RED);
         } else if (name.equalsIgnoreCase("south_end")){
             this.visitorZone = true;
-            this.r.setFill(Color.GREEN);
+            this.rectangle.setFill(Color.GREEN);
         } else if (name.equalsIgnoreCase("exhibit")) {
-            this.r.setFill(Color.BLUE);
+            this.rectangle.setFill(Color.BLUE);
         }
-        this.r.toBack();
-        this.r.setTranslateX(p.getX());
-        this.r.setTranslateY(p.getY());
+        this.rectangle.toBack();
+        this.rectangle.setTranslateX(p.getX());
+        this.rectangle.setTranslateY(p.getY());
 
     }
 
@@ -73,15 +73,15 @@ public class Zone {
      *Influence the Y Coordinate. This will be used for parking purposes.
      */
     public Point getRandomPoint() {
-        double xZ = this.r.getX();
-        double yZ = this.r.getY();
-        double wZ = this.r.getWidth();
+        double xZ = this.rectangle.getX();
+        double yZ = this.rectangle.getY();
+        double wZ = this.rectangle.getWidth();
         return new Point((int)(xZ+ (Math.random()*wZ)), (int) yZ);
 
     }
 
     public Shape getShape(){
-        return this.r;
+        return this.rectangle;
     }
 
 }
