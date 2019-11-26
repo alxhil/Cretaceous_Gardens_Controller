@@ -237,10 +237,6 @@ public class Vehicle implements Resource {
         this.second = 0;
     }
 
-    public boolean isOverCapacityDetected() {
-        return this.currentCapacity > 10;
-    }
-
     public Text getText(){
         return this.text;
     }
