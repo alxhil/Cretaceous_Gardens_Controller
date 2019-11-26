@@ -13,12 +13,18 @@ public class Guest {
 
     private UUID uuid;
     private int number;
+    private int tick;
+    private int second;
     private Boolean draw;
     private Boolean inVehicle;
     private Circle circle;
+    private Point movingPoint;
 
     public Guest(Point point){
+        this.movingPoint = new Point(0,0);
         this.inVehicle = false;
+        this.tick = 0;
+        this.second = 0;
         this.circle = new Circle(0, 0, 9);
         this.draw = true;
         this.uuid = UUID.randomUUID();
@@ -28,12 +34,21 @@ public class Guest {
         return this.uuid;
     }
 
+    public void setMovingPoint(Point point) {
+        this.movingPoint = point;
+    }
+
+    public Point getMovingPoint() {
+        return this.movingPoint;
+    }
+
 
 
     public void move(double x, double y) {
         this.circle.setTranslateX(x);
         this.circle.setTranslateY(y);
     }
+
 
     public Point getLocation() {
         return new Point((int) this.circle.getTranslateX(), (int) this.circle.getTranslateY());
@@ -60,6 +75,21 @@ public class Guest {
         this.inVehicle = isInVehicle;
     }
 
+    public void tick() {
+        this.tick++;
+        if(this.tick >= 60){
+            this.second++;
+            this.tick = 0;
+        }
+    }
+
+    public int getSecond() {
+        return this.second;
+    }
+
+    public void resetSecond() {
+        this.second = 0;
+    }
 
     /*
     https://stackoverflow.com/a/58800861

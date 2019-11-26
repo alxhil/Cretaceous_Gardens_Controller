@@ -16,12 +16,14 @@ public class Cgc{
     private LinkedList<Guest> guestList;
     private LinkedList<Vehicle> vehicleList;
     private LinkedList<AutomatedStation> stationList;
+    private LinkedList<Zone> zoneList;
     private SecuritySystem securitySystem;
     private int guestCount = 0;
     private boolean emergency = false;
 
 
     public Cgc(){
+        this.zoneList = new LinkedList<Zone>();
         this.guestList = new LinkedList<Guest>();
         this.vehicleList = new LinkedList<Vehicle>();
         this.stationList = new LinkedList<AutomatedStation>();
@@ -30,6 +32,11 @@ public class Cgc{
 
     public void registerGuest(Guest guest){
         this.guestList.add(guest);
+    }
+
+    public void registerZone(Zone zone) {
+        this.zoneList.add(zone);
+
     }
 
     public <T> boolean register(Object resource){
@@ -81,6 +88,10 @@ public class Cgc{
 
     public LinkedList<Guest> getGuests(){
         return this.guestList;
+    }
+
+    public LinkedList<Zone> getZoneList() {
+        return this.zoneList;
     }
 
     public LinkedList<AutomatedStation> getStations(){
