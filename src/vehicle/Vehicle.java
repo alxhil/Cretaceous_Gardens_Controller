@@ -33,7 +33,8 @@ public class Vehicle implements Resource {
     private UUID identifier;
     private Rectangle rectangle;
     private LinkedList<Guest> guestsInVehicle;
-    private Boolean intermission;
+    private boolean waiting;
+    private String destination;
 
 
     private boolean emergency;
@@ -44,13 +45,13 @@ public class Vehicle implements Resource {
      */
     public Vehicle(Point point, Image carImage) throws FileNotFoundException {
 
-        vehicleText();
+        this.initializeText();
 
         this.guestsInVehicle = new LinkedList<Guest>();
         this.rectangle = new Rectangle(50,50);
         this.rectangle.setFill(new ImagePattern(carImage));
 
-        this.intermission = false;
+        this.waiting = false;
         this.tick = 0;
         this.second = 0;
         this.location = point;
@@ -66,12 +67,15 @@ public class Vehicle implements Resource {
 
     public void setEmergency(boolean emergency){
         this.emergency = emergency;
+        if (emergency) {
+            this.setDestination(Zone.DefaultZone.PARKING_SOUTH.getName());
+        }
     }
 
     /***
      * Init text on vehicle for debugging purposes (Might keep in final build)
      */
-    public void vehicleText(){
+    public void initializeText(){
         this.text = new Text(0, 0, "0");
         this.text.setFont(Font.font("Alatsi", 20));
         this.text.setStroke(Color.WHITE);
@@ -83,12 +87,18 @@ public class Vehicle implements Resource {
     }
 
 
-    public Boolean getIntermission() {
-        return this.intermission;
+    /*
+    * Indicates that the vehicle is waiting on a timer
+    */
+    public boolean isWaiting() {
+        return this.waiting;
     }
 
-    public void setIntermission(){
-        this.intermission = !this.intermission;
+    /*
+    * Toggles the vehicle as to whether it is waiting or not.
+    */
+    public void toggleWaiting(){
+        this.waiting = !this.waiting;
     }
 
     public void increaseCapacity() {
@@ -105,13 +115,8 @@ public class Vehicle implements Resource {
      *
      * @return  Returns true if LinkedList from parameter has guest from parameter, else return false.
      */
-    Boolean validate(Guest guest, LinkedList<UUID> uuid){
-        if(uuid.contains(guest.getUUID())){
-            return true;
-        } else {
-            return false;
-        }
-
+    boolean validate(Guest guest, LinkedList<UUID> uuid){
+        return uuid.contains(guest.getUUID());
     }
 
     public boolean verifyEntryRFID(UUID userToken){
@@ -127,7 +132,9 @@ public class Vehicle implements Resource {
 
 
     public void checkCapacity() {
-        if((this.currentCapacity == 10) || ((this.second >= 15) && this.currentCapacity > 0)) {
+
+        if((this.currentCapacity == 10) || (this.second >= 15 && this.currentCapacity > 0)) {
+
             this.isFull = true;
             this.isMoving = true;
         } else {
@@ -158,15 +165,15 @@ public class Vehicle implements Resource {
         return this.rectangle;
     }
 
-    public Boolean isMoving() {
+    public boolean isMoving() {
         return this.isMoving;
     }
 
-    public void setMoving(Boolean b) {
-        this.isMoving = b;
+    public void setMoving(boolean moving) {
+        this.isMoving = moving;
     }
 
-    public Boolean getIntersection(Zone zone) {
+    public boolean getIntersection(Zone zone) {
         return this.getShape().getBoundsInParent().intersects(zone.getShape().getBoundsInParent());
     }
 
@@ -195,15 +202,14 @@ public class Vehicle implements Resource {
         return this.guestsInVehicle;
     }
 
-    public void rotateVehicle(double doub) {
+    public void rotateVehicle(double rotation) {
         if (this.emergency) {
             return;
         }
         double centerX = this.rectangle.getX() + this.rectangle.getWidth() / 2;
         double centerY = this.rectangle.getY() + this.rectangle.getWidth() / 2;
-        Rotate rotate = new Rotate(doub, centerX, centerY);
+        Rotate rotate = new Rotate(rotation, centerX, centerY);
         this.rectangle.getTransforms().add(rotate);
-
     }
 
     public void tick() {
@@ -213,6 +219,14 @@ public class Vehicle implements Resource {
             this.timerText.setText(""+this.second);
             this.tick = 0;
         }
+    }
+
+    public void setDestination(String zoneName){
+        this.destination = zoneName;
+    }
+
+    public String getDestination(){
+        return this.destination;
     }
 
     public int getSecond() {

@@ -26,6 +26,7 @@ import guest.Guest;
 import vehicle.Vehicle;
 
 import java.awt.*;
+import java.util.LinkedList;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
@@ -92,12 +93,6 @@ public class FXApp extends Application {
     }
 
     public void gameLoop() {
-        // In case the security system goes down,
-        // in a real implementation this would be done in the security
-        // systems event loop
-
-
-
         /**
          * Tick system **Keep this first in loop**
          *
@@ -111,16 +106,23 @@ public class FXApp extends Application {
             guest.tick();
         }
 
-
-
-
-
-        for (Guest guest : controller.getGuests()) {
-            if (!guest.isInVehicle()) {
-                for(Zone zone : controller.getZoneList()) {
-                    if(controller.getVehicles().get(0).getIntersection(zone) && zone.getName().equalsIgnoreCase("parking_south") &&
-                        !controller.getVehicles().get(0).isMoving()) {
-                        guest.setMovingPoint(controller.getVehicles().get(0).getLocation());
+        for(Zone zone : controller.getZoneList()) {
+            Vehicle vehicle = controller.getVehicles().get(0);
+            String zoneName = zone.getName();
+            if (zoneName.equals(Zone.DefaultZone.PARKING_SOUTH.getName())){
+                if (!vehicle.getIntersection(zone) || vehicle.isMoving()) {
+                    break;
+                }
+                for (Guest guest : controller.getGuests()) {
+                    if (guest.isInVehicle()) {
+                        continue;
+                    }
+                    guest.setMovingPoint(vehicle.getLocation());
+                }
+            } else if (zoneName.equals(Zone.DefaultZone.EXHIBIT.getName())) {
+                for (Guest guest: controller.getGuests()){
+                    if (vehicle.isMoving() && !guest.isInVehicle() && !guest.getIntersection(zone)){
+                        guest.setMovingPoint(Zone.DefaultZone.SOUTH_END.getRandomPoint());
                     }
                 }
             }
@@ -134,41 +136,61 @@ public class FXApp extends Application {
 
         for(Zone zone : controller.getZoneList()) {
             for (Vehicle vehicle : controller.getVehicles()) {
-                if (vehicle.isMoving()) {
-
-
-                    if (vehicle.getIntersection(zone) && vehicle.isMoving() && zone.getName().equalsIgnoreCase("parking_north") && !vehicle.getIntermission()) {
+                String zoneName = zone.getName();
+                if (zoneName.equals(Zone.DefaultZone.PARKING_NORTH.getName())){
+                    if (vehicle.isMoving() && vehicle.getIntersection(zone) && vehicle.getDestination().equals(zoneName)) {
                         vehicle.setMoving(false);
                         vehicle.resetSecond();
+                        vehicle.toggleWaiting();
                         Point parking = Zone.DefaultZone.PARKING_NORTH.getRandomPoint();
-                        vehicle.move(parking.getX(), parking.getY());
-                        for (Guest guest : controller.getGuests()) {
-                            if (vehicle.getGuestsInVehicle().contains(guest)) {
-
-                                vehicle.removeFromVehicle(guest);
-                                guest.getShape().setTranslateX(vehicle.getShape().getTranslateX());
-                                guest.getShape().setTranslateY(vehicle.getShape().getTranslateY() - 50);
-                                guest.setVisible();
-                                guest.setMovingPoint(Zone.DefaultZone.EXHIBIT.getRandomPoint());
-
-                            }
+                        LinkedList<Guest> guestsToRemove = new LinkedList();
+                        for (Guest guest : vehicle.getGuestsInVehicle()) {
+                            guestsToRemove.add(guest);
+                            guest.getShape().setTranslateX(vehicle.getShape().getTranslateX());
+                            guest.getShape().setTranslateY(vehicle.getShape().getTranslateY() - 50);
+                            guest.setVisible();
+                            guest.setMovingPoint(Zone.DefaultZone.EXHIBIT.getRandomPoint());
                         }
+                        // Don't want to concurrently modify the list, so have to
+                        // create a separate list
+                        for (Guest guest: guestsToRemove) {
+                            vehicle.removeFromVehicle(guest);
+                        }
+                        vehicle.setDestination(Zone.DefaultZone.PARKING_SOUTH.getName());
+                    } else if (!vehicle.isMoving() && vehicle.getSecond() > 10 && !vehicle.isWaiting()) {
+                        vehicle.toggleWaiting();
+                        vehicle.resetSecond();
                     }
-                    else if (vehicle.getIntersection(zone) && vehicle.isMoving() && zone.getName().equalsIgnoreCase("parking_south") && vehicle.getIntermission()) {
-                        vehicle.setIntermission();
+                } else if (zoneName.equals(Zone.DefaultZone.PARKING_SOUTH.getName())){
+                    if (vehicle.isMoving() && vehicle.getIntersection(zone) && vehicle.getDestination().equals(zoneName)) {
+                        vehicle.setMoving(false);
+                        vehicle.resetSecond();
+                        Point parking = Zone.DefaultZone.PARKING_SOUTH.getRandomPoint();
+                        LinkedList<Guest> guestsToRemove = new LinkedList();
+                        for (Guest guest : vehicle.getGuestsInVehicle()) {
+                            guestsToRemove.add(guest);
+                            guest.getShape().setTranslateX(vehicle.getShape().getTranslateX());
+                            guest.getShape().setTranslateY(vehicle.getShape().getTranslateY() - 50);
+                            guest.setVisible();
+                            guest.setMovingPoint(Zone.DefaultZone.SOUTH_END.getRandomPoint());
+                        }
+                        for (Guest guest : guestsToRemove) {
+                            vehicle.removeFromVehicle(guest);
+                        }
+                        vehicle.setDestination(Zone.DefaultZone.PARKING_NORTH.getName());
                     }
-                } else if (vehicle.getIntersection(zone) && !vehicle.isMoving() && zone.getName().equalsIgnoreCase("parking_north")
-                        && vehicle.getSecond() > 10 && !vehicle.getIntermission()) {
-
-
-                    vehicle.setIntermission();
-                    vehicle.resetSecond();
+                } else if (zoneName.equals(Zone.DefaultZone.EXHIBIT.getName())){
                     for (Guest guest : controller.getGuests()) {
-
+                        if (!guest.getIntersection(zone) || vehicle.getSecond() < 10){
+                            continue;
+                        }
+                        // TODO Support getting vehicles by zone
                         guest.setMovingPoint(vehicle.getLocation());
                         guest.setInVehicle(false);
 
-                    }
+                    };
+                } else {
+                    continue;
                 }
             }
         }
@@ -176,6 +198,9 @@ public class FXApp extends Application {
 
 
 
+        // In case the security system goes down,
+        // in a real implementation this would be done in the security
+        // systems event loop
         controller.getSecuritySystem().sendStatus();
         for (AutomatedStation station : controller.getStations()) {
             station.sendStatus();
@@ -194,7 +219,7 @@ public class FXApp extends Application {
 
                 vehicle.move(-Math.cos(h) * 2*RATIO, -Math.sin(h) *2* RATIO);
                 // Hacky hand-tuned parameter for rotating
-                vehicle.rotateVehicle(0.57);
+                vehicle.rotateVehicle(0.565);
                continue;
 
             }
@@ -287,6 +312,7 @@ public class FXApp extends Application {
         Image carImage = new Image(new FileInputStream("static/img/car.png"));
 
         Vehicle vehicle = new Vehicle(Zone.DefaultZone.PARKING_SOUTH.getRandomPoint(), carImage);
+        vehicle.setDestination(Zone.DefaultZone.PARKING_NORTH.getName());
         controller.register(vehicle);
 
         // Trees are on the border pane
