@@ -2,9 +2,7 @@ package security;
 
 
 public class InfraredCamera{
-
-    public boolean isAliceVisible(){
-        return true;
+    public boolean isAliceVisible(boolean isAliceVisible){
+        return isAliceVisible;
     }
-
 }

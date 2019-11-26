@@ -1,7 +1,6 @@
 package cgc;
 
 import javafx.animation.Animation;
-import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -9,7 +8,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -18,38 +16,26 @@ import javafx.scene.input.MouseEvent;
 
 import javafx.scene.layout.BorderPane;
 
-import javafx.scene.layout.Pane;
-
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.TriangleMesh;
-import javafx.scene.transform.Rotate;
+import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import astation.AutomatedStation;
-import cgc.Cgc;
 import guest.Guest;
 import vehicle.Vehicle;
 
 import java.awt.*;
+import java.util.LinkedList;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.LinkedList;
 
 public class FXApp extends Application {
 
     public StackPane root = new StackPane();
-    private Boolean DEBUG = true;
-    private Boolean DEBUGSTART = false;
     private final double WIDTH = 900;
     private final double HEIGHT = 900;
     private final double RATIO = (WIDTH + HEIGHT)/Math.sqrt(WIDTH/2);
-    private final Point NORTH_END = new Point(40, 40);
-    private final Point SOUTH_END = new Point(10, 10);
     private double h = 4.71;
     private Cgc controller = new Cgc();
 
@@ -58,104 +44,7 @@ public class FXApp extends Application {
     }
 
 
-    /**
-     * Testing | Don't change
-     * VVVVVVV
-     */
-    public void startUp() throws FileNotFoundException {
 
-        Image carImage = new Image(new FileInputStream("static/img/sideViewCar.png"));
-
-
-        Vehicle v = new Vehicle(new Point(10, 10),carImage);
-        v.move(Math.cos(4.71), Math.sin(4.71));
-        controller.registerResource(v);
-
-
-        // Trees are on the border pane
-        // getTreePane method give borderPane with trees
-        BorderPane longTreePane = getTreePane("static/img/longTree.png");
-        StackPane.setAlignment(longTreePane,Pos.CENTER_LEFT);
-        StackPane.setMargin(longTreePane, new Insets(300,50,650,550));
-
-        BorderPane shortTreePane = getTreePane("static/img/shortTree.png");
-        StackPane.setAlignment(shortTreePane,Pos.CENTER_RIGHT);
-        StackPane.setMargin(shortTreePane, new Insets(300,550,650,50));
-
-        ImageView pathImage = new ImageView(new Image(new FileInputStream("static/img/circularRoad.png")));
-
-        pathImage.setFitWidth(6*RATIO);
-        pathImage.setFitHeight(4*RATIO);
-        StackPane.setAlignment(pathImage, Pos.CENTER);
-
-        ImageView grassImage = new ImageView(new Image(new FileInputStream("static/img/Grass.jpg")));
-        grassImage.setFitWidth(900);
-        grassImage.setFitHeight(900);
-
-        ImageView trexImage = new ImageView(new Image(new FileInputStream("static/img/alice.gif")));
-        trexImage.setFitHeight(80);
-        trexImage.setFitWidth(150);
-        StackPane.setAlignment(trexImage,Pos.TOP_CENTER);
-        StackPane.setMargin(trexImage, new Insets(100));
-
-        ImageView fenceImage = new ImageView(new Image(new FileInputStream("static/img/fence.png")));
-        fenceImage.setFitHeight(200);
-        fenceImage.setFitWidth(300);
-        fenceImage.setRotate(180.0);
-        StackPane.setAlignment(fenceImage,Pos.TOP_CENTER);
-        StackPane.setMargin(fenceImage, new Insets(50));
-
-        ImageView payStationImage = new ImageView(new Image(new FileInputStream("static/img/payStation.png")));
-        payStationImage.setFitWidth(150);
-        payStationImage.setFitHeight(150);
-        StackPane.setAlignment(payStationImage, Pos.BOTTOM_RIGHT);
-        StackPane.setMargin(payStationImage, new Insets(200,100,200,150));
-
-
-        root.getChildren().addAll(grassImage,longTreePane,shortTreePane,pathImage,trexImage,
-                fenceImage,payStationImage,v.getR(), v.getText());
-
-
-    }
-
-    /**
-     * This method creates 5 objects of tree image and put it in
-     * the border pane.
-     * @param imageName image name which is a string
-     * @return  border Pane object with trees
-     * @throws FileNotFoundException
-     */
-    public BorderPane getTreePane(String imageName) throws FileNotFoundException {
-        BorderPane treePane = new BorderPane();
-
-
-        ImageView tree1 = new ImageView(new Image(new FileInputStream(imageName)));
-        tree1.setFitHeight(50);
-        ImageView tree2 = new ImageView(new Image(new FileInputStream(imageName)));
-        tree2.setFitHeight(50);
-        ImageView tree3 = new ImageView(new Image(new FileInputStream(imageName)));
-        tree3.setFitHeight(50);
-        ImageView tree4 = new ImageView(new Image(new FileInputStream(imageName)));
-        tree4.setFitHeight(50);
-        ImageView tree5 = new ImageView(new Image(new FileInputStream(imageName)));
-        tree5.setFitHeight(50);
-
-        treePane.setTop(tree1);
-        treePane.setBottom(tree2);
-        treePane.setLeft(tree3);
-        treePane.setRight(tree4);
-        treePane.setCenter(tree5);
-
-
-        BorderPane.setAlignment(tree1, Pos.CENTER);
-        BorderPane.setAlignment(tree2, Pos.CENTER);
-
-
-
-
-        return treePane;
-
-    }
 
     public void start(Stage primaryStage) throws FileNotFoundException {
         root.setPrefSize(WIDTH,HEIGHT);
@@ -164,85 +53,200 @@ public class FXApp extends Application {
 
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+        primaryStage.setResizable(false);
         primaryStage.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                int mouseX = (int) mouseEvent.getSceneX();
-                int mouseY = (int) mouseEvent.getSceneY();
-                System.out.println("Mouse x: "+mouseX+" Mouse y: "+mouseY);
-                Guest g = new Guest(new Point(mouseX,mouseY));
-                g.move(mouseX,mouseY);
-                System.out.println("Placed at ("+ g.getLocation().getX()+" ,"+ g.getLocation().getY()+")");
-                controller.registerGuest(g);
-                root.getChildren().add(g.getC());
-                g.getC().setTranslateX(mouseX);
-                g.getC().setTranslateY(mouseY);
+
+                Point p = Zone.DefaultZone.SOUTH_END.getRandomPoint();
+                Guest guest = new Guest(p);
+                guest.move(p.getX(), p.getY());
+                System.out.println("Placed at (" + p.getX() + " ," + p.getY() + ")");
+                controller.registerGuest(guest);
+                Shape visitorShape = guest.getShape();
+                root.getChildren().add(visitorShape);
+                visitorShape.setTranslateX(p.getX());
+                visitorShape.setTranslateY(p.getY());
             }
         });
         primaryStage.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             public void handle(KeyEvent ke) {
                 if (ke.getCode() == KeyCode.V) {
-                    DEBUGSTART = true;
+                    //DEBUGSTART = true;
+                } else if (ke.getCode() == KeyCode.E) {
+                    controller.handleEvent(new AppUpdate(true));
+                } else if (ke.getCode() == KeyCode.R) {
+                    controller.handleEvent(new AppUpdate(false));
                 }
+
             }
         });
         startUp();
-
+        zoneStart();
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.0133), event -> {
-            testLoop();
+            gameLoop();
         }));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
 
+
     }
 
-    public void testLoop() {
-
-        for(Vehicle v : controller.getVehicles()) {
-            //if(v.getLocation().)
+    public void gameLoop() {
+        /**
+         * Tick system **Keep this first in loop**
+         *
+         */
+        for(Vehicle vehicle : controller.getVehicles()) {
+            vehicle.tick();
+            vehicle.checkCapacity();
         }
 
-        for (Vehicle v : controller.getVehicles()) {
-            if(v.isMoving()) {
+        for(Guest guest : controller.getGuests()) {
+            guest.tick();
+        }
+
+        for(Zone zone : controller.getZoneList()) {
+            Vehicle vehicle = controller.getVehicles().get(0);
+            String zoneName = zone.getName();
+            if (zoneName.equals(Zone.DefaultZone.PARKING_SOUTH.getName())){
+                if (!vehicle.getIntersection(zone) || vehicle.isMoving()) {
+                    break;
+                }
+                for (Guest guest : controller.getGuests()) {
+                    if (guest.isInVehicle()) {
+                        continue;
+                    }
+                    guest.setMovingPoint(vehicle.getLocation());
+                }
+            } else if (zoneName.equals(Zone.DefaultZone.EXHIBIT.getName())) {
+                for (Guest guest: controller.getGuests()){
+                    if (vehicle.isMoving() && !guest.isInVehicle() && !guest.getIntersection(zone)){
+                        guest.setMovingPoint(Zone.DefaultZone.SOUTH_END.getRandomPoint());
+                    }
+                }
+            }
+        }
+
+
+
+        /**
+         * Checking for collision if moving
+         * PARKING_NORTH COLLISION
+         */
+
+        for(Zone zone : controller.getZoneList()) {
+            for (Vehicle vehicle : controller.getVehicles()) {
+                String zoneName = zone.getName();
+                if (zoneName.equals(Zone.DefaultZone.PARKING_NORTH.getName())){
+                    if (vehicle.isMoving() && vehicle.getIntersection(zone) && vehicle.getDestination().equals(zoneName)) {
+                        vehicle.setMoving(false);
+                        vehicle.resetSecond();
+                        vehicle.toggleWaiting();
+                        Point parking = Zone.DefaultZone.PARKING_NORTH.getRandomPoint();
+                        LinkedList<Guest> guestsToRemove = new LinkedList();
+                        for (Guest guest : vehicle.getGuestsInVehicle()) {
+                            guestsToRemove.add(guest);
+                            guest.getShape().setTranslateX(vehicle.getShape().getTranslateX());
+                            guest.getShape().setTranslateY(vehicle.getShape().getTranslateY() - 50);
+                            guest.setVisible();
+                            guest.setMovingPoint(Zone.DefaultZone.EXHIBIT.getRandomPoint());
+                        }
+                        // Don't want to concurrently modify the list, so have to
+                        // create a separate list
+                        for (Guest guest: guestsToRemove) {
+                            vehicle.removeFromVehicle(guest);
+                        }
+                        vehicle.setDestination(Zone.DefaultZone.PARKING_SOUTH.getName());
+                    } else if (!vehicle.isMoving() && vehicle.getSecond() > 10 && !vehicle.isWaiting()) {
+                        vehicle.toggleWaiting();
+                        vehicle.resetSecond();
+                    }
+                } else if (zoneName.equals(Zone.DefaultZone.PARKING_SOUTH.getName())){
+                    if (vehicle.isMoving() && vehicle.getIntersection(zone) && vehicle.getDestination().equals(zoneName)) {
+                        vehicle.setMoving(false);
+                        vehicle.resetSecond();
+                        Point parking = Zone.DefaultZone.PARKING_SOUTH.getRandomPoint();
+                        LinkedList<Guest> guestsToRemove = new LinkedList();
+                        for (Guest guest : vehicle.getGuestsInVehicle()) {
+                            guestsToRemove.add(guest);
+                            guest.getShape().setTranslateX(vehicle.getShape().getTranslateX());
+                            guest.getShape().setTranslateY(vehicle.getShape().getTranslateY() - 50);
+                            guest.setVisible();
+                            guest.setMovingPoint(Zone.DefaultZone.SOUTH_END.getRandomPoint());
+                        }
+                        for (Guest guest : guestsToRemove) {
+                            vehicle.removeFromVehicle(guest);
+                        }
+                        vehicle.setDestination(Zone.DefaultZone.PARKING_NORTH.getName());
+                    }
+                } else if (zoneName.equals(Zone.DefaultZone.EXHIBIT.getName())){
+                    for (Guest guest : controller.getGuests()) {
+                        if (!guest.getIntersection(zone) || vehicle.getSecond() < 10){
+                            continue;
+                        }
+                        // TODO Support getting vehicles by zone
+                        guest.setMovingPoint(vehicle.getLocation());
+                        guest.setInVehicle(false);
+
+                    };
+                } else {
+                    continue;
+                }
+
+            }
+        }
+
+
+
+
+        // In case the security system goes down,
+        // in a real implementation this would be done in the security
+        // systems event loop
+        controller.getSecuritySystem().sendStatus();
+        for (AutomatedStation station : controller.getStations()) {
+            station.sendStatus();
+        }
+        for (Vehicle vehicle : controller.getVehicles()) {
+            // Currently a noop
+            vehicle.sendStatus();
+            if(vehicle.isMoving()) {
                 h += .01;
+
                 //System.out.println("moving");
-                v.move(-Math.cos(h) * 2*RATIO, -Math.sin(h) *2* RATIO);
 
-             //  continue;
+                vehicle.move(-Math.cos(h) * 2*RATIO, -Math.sin(h) *2* RATIO);
+                //v.rotateVehicle(Math.asin(-h));
+
+
+                vehicle.move(-Math.cos(h) * 2*RATIO, -Math.sin(h) *2* RATIO);
+                // Hacky hand-tuned parameter for rotating
+                vehicle.rotateVehicle(0.565);
+               continue;
+
             }
 
 
-
-
-            if(DEBUGSTART){
-                int rX = (int) (Math.random()*999);
-                int rY = (int) (Math.random()*999);
-                Guest g = new Guest(new Point(rX, rY));
-                controller.registerGuest(g);
-                g.move(rX,rY);
-                root.getChildren().add(g.getC());
-            }
+            /**
+             * PathFinding Uses guest
+             */
             for(Guest guest : controller.getGuests()) {
-                pathFinding(guest, v.getLocation());
-            }
-
-            for(Guest guest : controller.getGuests()) {
-                if(guest.getIntersection(v) && !guest.isInVehicle()){
-                    v.addToVehicle(guest);
+                pathFinding(guest);
+                if(guest.getIntersection(vehicle) && !guest.isInVehicle()){
+                    vehicle.addToVehicle(guest);
+                    vehicle.resetSecond();
                     guest.setInvisible();
                 }
             }
-
         }
 
     }
 
-    public void pathFinding(Guest g, Point p) {
-
-        double x1 = g.getC().getTranslateX();
-        double y1 = g.getC().getTranslateY();
-        double x2 = p.getX();
-        double y2 = p.getY();
+    public void pathFinding(Guest guest) {
+        double x1 = guest.getShape().getTranslateX();
+        double y1 = guest.getShape().getTranslateY();
+        double x2 = guest.getMovingPoint().getX();
+        double y2 = guest.getMovingPoint().getY();
         double distance = distance(x1,x2,y1,y2);
 
         double xSlope = 0;
@@ -264,10 +268,7 @@ public class FXApp extends Application {
         } else {
             xSlope = -.1;
         }
-        System.out.println("x1: " +x1+" y1: "+y1 +" x2: "+x2+" y2: "+y2);
-        System.out.println("xSlope: " +xSlope+" ySlope: "+ySlope);
-        System.out.println("moving to (" +(g.getC().getTranslateX() +( (distance) * xSlope))+") , ("+(g.getC().getTranslateY() + ((distance) * ySlope)) );
-        g.move(g.getC().getTranslateX() +( (distance) * xSlope), g.getC().getTranslateY() + ((distance) * ySlope));
+        guest.move(x1 + ((distance * xSlope)/10), y1 + ((distance * ySlope)/10));
 
     }
 
@@ -275,5 +276,128 @@ public class FXApp extends Application {
         return Math.sqrt(((y2 - y1) * (y2 - y1)) + ((x2 - x1) * (x2 - x1)));
     }
 
+    public BorderPane getTreePane(String imageName) throws FileNotFoundException {
+        BorderPane treePane = new BorderPane();
+
+        ImageView tree1 = new ImageView(new Image(new FileInputStream(imageName))) ,
+                tree2 = new ImageView(new Image(new FileInputStream(imageName))) ,
+                tree3 = new ImageView(new Image(new FileInputStream(imageName))) ,
+                tree4 = new ImageView(new Image(new FileInputStream(imageName))) ,
+                tree5 = new ImageView(new Image(new FileInputStream(imageName)));
+        tree1.setFitHeight(75);
+        tree2.setFitHeight(75);
+        tree3.setFitHeight(75);
+        tree4.setFitHeight(75);
+        tree5.setFitHeight(75);
+        tree1.setFitWidth(75);
+        tree2.setFitWidth(75);
+        tree3.setFitWidth(75);
+        tree4.setFitWidth(75);
+        tree5.setFitWidth(75);
+
+
+        treePane.setTop(tree1);
+        treePane.setBottom(tree2);
+        treePane.setLeft(tree3);
+        treePane.setRight(tree4);
+        treePane.setCenter(tree5);
+
+        BorderPane.setAlignment(tree1, Pos.CENTER);
+        BorderPane.setAlignment(tree2, Pos.CENTER);
+
+        return treePane;
+
+    }
+
+    public void startUp() throws FileNotFoundException {
+
+        Image carImage = new Image(new FileInputStream("static/img/car.png"));
+
+        Vehicle vehicle = new Vehicle(Zone.DefaultZone.PARKING_SOUTH.getRandomPoint(), carImage);
+        vehicle.setDestination(Zone.DefaultZone.PARKING_NORTH.getName());
+        controller.register(vehicle);
+
+        // Trees are on the border pane
+        // getTreePane method give borderPane with trees
+
+        BorderPane longTreePane = getTreePane("static/img/longTree.png");
+        StackPane.setAlignment(longTreePane,Pos.CENTER_LEFT);
+        StackPane.setMargin(longTreePane, new Insets(300,50,650,650));
+
+        BorderPane shortTreePane = getTreePane("static/img/shortTree.png");
+        StackPane.setAlignment(shortTreePane,Pos.CENTER_RIGHT);
+        StackPane.setMargin(shortTreePane, new Insets(50,600,50,0));
+
+        ImageView pathImage = new ImageView(new Image(new FileInputStream("static/img/circularRoad.png")));
+
+        pathImage.setFitWidth(5*RATIO);
+        pathImage.setFitHeight(5*RATIO);
+        StackPane.setAlignment(pathImage, Pos.CENTER);
+
+        ImageView grassImage = new ImageView(new Image(new FileInputStream("static/img/Grass.png")));
+        grassImage.setFitWidth(900);
+        grassImage.setFitHeight(900);
+
+        ImageView trexImage = new ImageView(new Image(new FileInputStream("static/img/alice.gif")));
+        trexImage.setFitHeight(80);
+        trexImage.setFitWidth(150);
+        StackPane.setAlignment(trexImage,Pos.TOP_CENTER);
+        StackPane.setMargin(trexImage, new Insets(100));
+
+        ImageView fenceImage = new ImageView(new Image(new FileInputStream("static/img/fence.png")));
+        fenceImage.setFitHeight(200);
+        fenceImage.setFitWidth(300);
+        fenceImage.setRotate(180.0);
+        StackPane.setAlignment(fenceImage,Pos.TOP_CENTER);
+        StackPane.setMargin(fenceImage, new Insets(50));
+
+        ImageView payStationImage = new ImageView(new Image(new FileInputStream("static/img/payStation.png")));
+        payStationImage.setFitWidth(50);
+        payStationImage.setFitHeight(50);
+        StackPane.setAlignment(payStationImage, Pos.BOTTOM_CENTER);
+        StackPane.setMargin(payStationImage, new Insets(0,0,100,0));
+
+        ImageView waterImage = new ImageView(new Image(new FileInputStream("static/img/water.png")));
+        waterImage.setFitWidth(200);
+        waterImage.setFitHeight(200);
+        StackPane.setAlignment(waterImage, Pos.CENTER);
+        StackPane.setMargin(waterImage, new Insets(50));
+
+        root.getChildren().addAll(
+                grassImage,
+                longTreePane,
+                shortTreePane,
+                pathImage,
+                trexImage,
+                fenceImage,
+                payStationImage,
+                //waterImage,
+                vehicle.getShape(),
+                vehicle.getText(),
+                vehicle.getTimerText()
+        );
+    }
+
+
+    public void zoneStart() {
+
+        /**
+         * Zone Order : PARKING_SOUTH, PARKING_NORTH,
+         *              SOUTH_END, EXHIBIT, refer to Zone.DefaultZone Enum
+         * ZONES BEING COLORED ON THE GUI IS TEMPRORARY, JUST FOR DEBUGGING PURPOSES AT THE MOMENT
+         */
+        for(Zone.DefaultZone defZone : Zone.DefaultZone.values()){
+            Zone zone = new Zone(
+                    defZone.getLocation(),
+                    defZone.getWidth(),
+                    defZone.getHeight(),
+                    defZone.getName()
+            );
+            controller.registerZone(zone);
+            root.getChildren().add(zone.getShape());
+            zone.getShape().toFront();
+        }
+
+    }
 
 }

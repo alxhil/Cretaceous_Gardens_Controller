@@ -1,8 +1,10 @@
 package guest;
 
 
+import cgc.Zone;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import vehicle.Vehicle;
 
 import java.awt.*;
@@ -11,64 +13,100 @@ import java.util.UUID;
 public class Guest {
 
     private UUID uuid;
-    private int number;
-    private Boolean draw;
+    private int tick;
+    private int second;
     private Boolean inVehicle;
-    private Circle c;
+    private Circle circle;
+    private Point movingPoint;
 
-    public Guest(Point p){
+    public Guest(Point point){
+        this.movingPoint = new Point(0,0);
         this.inVehicle = false;
-        this.c = new Circle(0, 0, 9);
-        this.draw = true;
-        this.uuid = new UUID(123456789,123456789);
+        this.tick = 0;
+        this.second = 0;
+        this.circle = new Circle(0, 0, 9);
+        this.circle.setStroke(Color.WHITE);
+        this.circle.setFill(Color.PURPLE);
+        this.uuid = UUID.randomUUID();
     }
 
     public UUID getUUID() {
         return this.uuid;
     }
 
+    public void setMovingPoint(Point point) {
+        this.movingPoint = point;
+    }
+
+    public Point getMovingPoint() {
+        return this.movingPoint;
+    }
+
 
 
     public void move(double x, double y) {
-        this.c.setTranslateX(x);
-        this.c.setTranslateY(y);
+        this.circle.setTranslateX(x);
+        this.circle.setTranslateY(y);
     }
 
+
     public Point getLocation() {
-        return new Point((int) this.c.getTranslateX(), (int) this.c.getTranslateY());
+        return new Point((int) this.circle.getTranslateX(), (int) this.circle.getTranslateY());
     }
 
 
     /*
     https://gamedev.stackexchange.com/a/79628 thank you
      */
-    public Boolean getIntersection(Vehicle v) {
-        return this.c.getBoundsInParent().intersects(v.getR().getBoundsInParent());
+    public Boolean getIntersection(Vehicle vehicle) {
+        return this.getShape().getBoundsInParent().intersects(vehicle.getShape().getBoundsInParent());
     }
 
-    public Circle getC (){
-        return this.c;
+    public Boolean getIntersection(Zone zone) {
+        return this.getShape().getBoundsInParent().intersects(zone.getShape().getBoundsInParent());
     }
 
+
+
+    public Shape getShape (){
+        return this.circle;
+
+    }
     public Boolean isInVehicle(){
         return this.inVehicle;
     }
+    public void setInVehicle(Boolean isInVehicle) {
+        this.inVehicle = isInVehicle;
+    }
 
-    public void setInVehicle(Boolean b) {
-        this.inVehicle = b;
+    public void tick() {
+        this.tick++;
+        if(this.tick >= 60){
+            this.second++;
+            this.tick = 0;
+        }
+    }
+
+    public int getSecond() {
+        return this.second;
+    }
+
+    public void resetSecond() {
+        this.second = 0;
     }
 
     /*
     https://stackoverflow.com/a/58800861
      */
     public void setInvisible() {
-        this.c.setVisible(false);
-        this.c.managedProperty().bind(c.visibleProperty());
+        this.circle.setVisible(false);
+        this.circle.managedProperty().bind(this.circle.visibleProperty());
     }
-
     public void setVisible() {
-        this.c.setVisible(true);
-        this.c.managedProperty().bind(c.visibleProperty());
+        this.circle.setVisible(true);
+        this.circle.managedProperty().bind(this.circle.visibleProperty());
     }
+    // Noop for now, but eventually may want to behave differently
+    public void setEmergency(boolean emergency){};
 
 }
