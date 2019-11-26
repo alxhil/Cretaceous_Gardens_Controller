@@ -124,7 +124,7 @@ public class Vehicle implements Resource {
 
 
 
-    void checkCapacity() {
+    public void checkCapacity() {
         if((this.currentCapacity == 10) || (this.second >= 15)) {
             this.isFull = true;
             this.isMoving = true;

@@ -12,10 +12,8 @@ import java.util.UUID;
 public class Guest {
 
     private UUID uuid;
-    private int number;
     private int tick;
     private int second;
-    private Boolean draw;
     private Boolean inVehicle;
     private Circle circle;
     private Point movingPoint;
@@ -26,7 +24,6 @@ public class Guest {
         this.tick = 0;
         this.second = 0;
         this.circle = new Circle(0, 0, 9);
-        this.draw = true;
         this.uuid = UUID.randomUUID();
     }
 

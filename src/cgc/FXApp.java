@@ -103,6 +103,7 @@ public class FXApp extends Application {
          */
         for(Vehicle vehicle : controller.getVehicles()) {
             vehicle.tick();
+            vehicle.checkCapacity();
         }
 
         for(Guest guest : controller.getGuests()) {
@@ -113,9 +114,14 @@ public class FXApp extends Application {
 
 
 
-        for(Guest guest : controller.getGuests()) {
-            if(!guest.isInVehicle()){
-                guest.setMovingPoint(controller.getVehicles().get(0).getLocation());
+        for (Guest guest : controller.getGuests()) {
+            if (!guest.isInVehicle()) {
+                for(Zone zone : controller.getZoneList()) {
+                    if(controller.getVehicles().get(0).getIntersection(zone) && zone.getName().equalsIgnoreCase("parking_south") &&
+                        !controller.getVehicles().get(0).isMoving()) {
+                        guest.setMovingPoint(controller.getVehicles().get(0).getLocation());
+                    }
+                }
             }
         }
 
@@ -151,10 +157,11 @@ public class FXApp extends Application {
                         vehicle.setIntermission();
                     }
                 } else if (vehicle.getIntersection(zone) && !vehicle.isMoving() && zone.getName().equalsIgnoreCase("parking_north")
-                        && vehicle.getSecond() >= 10) {
-                    vehicle.resetSecond();
-                    vehicle.setIntermission();
+                        && vehicle.getSecond() > 10 && !vehicle.getIntermission()) {
 
+                    System.out.println("Hi");
+                    vehicle.setIntermission();
+                    vehicle.resetSecond();
                     for (Guest guest : controller.getGuests()) {
 
                         guest.setMovingPoint(vehicle.getLocation());
@@ -233,7 +240,7 @@ public class FXApp extends Application {
         } else {
             xSlope = -.1;
         }
-        guest.move(x1 + ((distance * xSlope)/5), y1 + ((distance * ySlope)/5));
+        guest.move(x1 + ((distance * xSlope)/10), y1 + ((distance * ySlope)/10));
 
     }
 
