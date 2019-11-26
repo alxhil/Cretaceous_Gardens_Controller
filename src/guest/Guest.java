@@ -56,7 +56,11 @@ public class Guest {
     https://gamedev.stackexchange.com/a/79628 thank you
      */
     public Boolean getIntersection(Vehicle vehicle) {
-        return this.circle.getBoundsInParent().intersects(vehicle.getShape().getBoundsInParent());
+        return this.getShape().getBoundsInParent().intersects(vehicle.getShape().getBoundsInParent());
+    }
+
+    public Boolean getIntersection(Zone zone) {
+        return this.getShape().getBoundsInParent().intersects(zone.getShape().getBoundsInParent());
     }
 
 
