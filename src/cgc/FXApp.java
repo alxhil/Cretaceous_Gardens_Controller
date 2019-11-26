@@ -75,14 +75,17 @@ public class FXApp extends Application {
                     //DEBUGSTART = true;
                 } else if (ke.getCode() == KeyCode.E) {
                     controller.handleEvent(new AppUpdate(true));
+                    controller.getSecuritySystem().playAudio(true);
                 } else if (ke.getCode() == KeyCode.R) {
                     controller.handleEvent(new AppUpdate(false));
+                    controller.getSecuritySystem().playAudio(false);
                 }
 
             }
         });
         startUp();
         zoneStart();
+        controller.getSecuritySystem().setAudio("static/audio/siren.mp3");
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.0133), event -> {
             gameLoop();
         }));
