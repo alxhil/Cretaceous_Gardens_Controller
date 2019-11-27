@@ -8,6 +8,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -17,7 +18,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -25,7 +28,9 @@ import astation.AutomatedStation;
 import guest.Guest;
 import vehicle.Vehicle;
 
+
 import java.awt.*;
+import java.io.PipedOutputStream;
 import java.util.LinkedList;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -38,6 +43,8 @@ public class FXApp extends Application {
     private final double RATIO = (WIDTH + HEIGHT)/Math.sqrt(WIDTH/2);
     private double h = 4.71;
     private Cgc controller = new Cgc();
+    private Button generateGuestButton;
+    private Button emergencyButton;
 
     public static void main(String[] args) {
         launch(args);
@@ -54,35 +61,48 @@ public class FXApp extends Application {
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
         primaryStage.setResizable(false);
-        primaryStage.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
 
-                Point p = Zone.DefaultZone.SOUTH_END.getRandomPoint();
-                Guest guest = new Guest(p);
-                guest.move(p.getX(), p.getY());
-                System.out.println("Placed at (" + p.getX() + " ," + p.getY() + ")");
-                controller.registerGuest(guest);
-                Shape visitorShape = guest.getShape();
-                root.getChildren().add(visitorShape);
-                visitorShape.setTranslateX(p.getX());
-                visitorShape.setTranslateY(p.getY());
-            }
-        });
-        primaryStage.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
-            public void handle(KeyEvent ke) {
-                if (ke.getCode() == KeyCode.V) {
-                    //DEBUGSTART = true;
-                } else if (ke.getCode() == KeyCode.E) {
-                    controller.handleEvent(new AppUpdate(true));
-                    controller.getSecuritySystem().playAudio(true);
-                } else if (ke.getCode() == KeyCode.R) {
-                    controller.handleEvent(new AppUpdate(false));
-                    controller.getSecuritySystem().playAudio(false);
-                }
+        this.generateGuestButton = new Button("Generate Guests");
+        this.generateGuestButton.setFont(new Font(15));
+        this.generateGuestButton.setStyle("-fx-background-color: #ff0000;");
+        StackPane.setAlignment(generateGuestButton, Pos.BOTTOM_LEFT);
+        StackPane.setMargin(generateGuestButton, new Insets(400,600,150,150));
 
-            }
+
+        ImageView imageView = new ImageView(new Image( new FileInputStream("static/img/emergency.png")));
+        imageView.setFitHeight(100);
+        imageView.setFitWidth(100);
+        this.emergencyButton = new Button();
+        double r=1.5;
+        this.emergencyButton.setShape(new Circle(r));
+        this.emergencyButton.setMinSize(2*r, 2*r);
+        this.emergencyButton.setMaxSize(2*r, 2*r);
+        this.emergencyButton.setGraphic(imageView);
+        StackPane.setAlignment(emergencyButton,Pos.BOTTOM_LEFT);
+        StackPane.setMargin(emergencyButton, new Insets(400,600,160,50));
+
+
+
+        this.generateGuestButton.setOnAction(e->{
+            Point p = Zone.DefaultZone.SOUTH_END.getRandomPoint();
+            Guest guest = new Guest(p);
+            guest.move(p.getX(), p.getY());
+            System.out.println("Placed at (" + p.getX() + " ," + p.getY() + ")");
+            controller.registerGuest(guest);
+            Shape visitorShape = guest.getShape();
+            root.getChildren().add(visitorShape);
+            visitorShape.setTranslateX(p.getX());
+            visitorShape.setTranslateY(p.getY());
         });
+
+       this.emergencyButton.setOnAction(e->{
+           controller.handleEvent(new AppUpdate(true));
+           controller.getSecuritySystem().playAudio(true);
+       //    controller.handleEvent(new AppUpdate(false));
+        //   controller.getSecuritySystem().playAudio(false);
+
+       });
+
         startUp();
         zoneStart();
         controller.getSecuritySystem().setAudio("static/audio/siren.mp3");
@@ -331,6 +351,8 @@ public class FXApp extends Application {
         StackPane.setAlignment(shortTreePane,Pos.CENTER_RIGHT);
         StackPane.setMargin(shortTreePane, new Insets(50,600,50,0));
 
+
+
         ImageView pathImage = new ImageView(new Image(new FileInputStream("static/img/circularRoad.png")));
 
         pathImage.setFitWidth(5*RATIO);
@@ -370,6 +392,8 @@ public class FXApp extends Application {
                 grassImage,
                 longTreePane,
                 shortTreePane,
+                generateGuestButton,
+                emergencyButton,
                 pathImage,
                 trexImage,
                 fenceImage,
