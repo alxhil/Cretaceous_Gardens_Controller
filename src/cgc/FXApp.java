@@ -86,6 +86,7 @@ public class FXApp extends Application {
         this.generateGuestButton.setOnAction(e->{
             Point p = Zone.DefaultZone.SOUTH_END.getRandomPoint();
             Guest guest = new Guest(p);
+            guest.setMovingPoint(p);
             guest.move(p.getX(), p.getY());
             System.out.println("Placed at (" + p.getX() + " ," + p.getY() + ")");
             controller.registerGuest(guest);
@@ -225,12 +226,6 @@ public class FXApp extends Application {
             vehicle.sendStatus();
             if(vehicle.isMoving()) {
                 h += .01;
-
-                //System.out.println("moving");
-
-                vehicle.move(-Math.cos(h) * 2*RATIO, -Math.sin(h) *2* RATIO);
-                //v.rotateVehicle(Math.asin(-h));
-
 
                 vehicle.move(-Math.cos(h) * 2*RATIO, -Math.sin(h) *2* RATIO);
                 // Hacky hand-tuned parameter for rotating
@@ -391,7 +386,7 @@ public class FXApp extends Application {
                 trexImage,
                 fenceImage,
                 payStationImage,
-                //waterImage,
+                waterImage,
                 vehicle.getShape(),
                 vehicle.getText(),
                 vehicle.getTimerText()
@@ -400,7 +395,6 @@ public class FXApp extends Application {
 
 
     public void zoneStart() {
-
         /**
          * Zone Order : PARKING_SOUTH, PARKING_NORTH,
          *              SOUTH_END, EXHIBIT, refer to Zone.DefaultZone Enum
@@ -408,14 +402,13 @@ public class FXApp extends Application {
          */
         for(Zone.DefaultZone defZone : Zone.DefaultZone.values()){
             Zone zone = new Zone(
-                    defZone.getLocation(),
-                    defZone.getWidth(),
-                    defZone.getHeight(),
-                    defZone.getName()
+                defZone.getLocation(),
+                defZone.getWidth(),
+                defZone.getHeight(),
+                defZone.getName()
             );
             controller.registerZone(zone);
             root.getChildren().add(zone.getShape());
-            zone.getShape().toFront();
         }
 
     }

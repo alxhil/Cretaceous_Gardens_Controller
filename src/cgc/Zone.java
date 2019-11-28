@@ -46,11 +46,12 @@ public class Zone {
         public int getWidth(){return this.width;}
 
         public Point getRandomPoint() {
-            int x = (int)this.location.getX();
-            int y = (int)this.location.getY();
-            int randomX = new Random().nextInt(this.width / 2);
-            int randomY = new Random().nextInt(this.height / 2);
-            return new Point(x + randomY, y + randomY);
+            int x = (int)this.location.getX() - this.width / 2;
+            int y = (int)this.location.getY() - this.height / 2;
+            Random rand = new Random();
+            int randomX = rand.nextInt(this.width);
+            int randomY = rand.nextInt(this.height);
+            return new Point(x + randomX, y + randomY);
         }
 
         public String getName() {
@@ -91,10 +92,11 @@ public class Zone {
             this.rectangle.setFill(Color.TRANSPARENT);
             this.rectangle.setStroke(Color.BLUE);
         }
-        this.rectangle.toBack();
+        this.rectangle.toFront();
+        this.rectangle.setX(point.getX());
+        this.rectangle.setY(point.getY());
         this.rectangle.setTranslateX(point.getX());
         this.rectangle.setTranslateY(point.getY());
-
     }
 
 
