@@ -36,6 +36,8 @@ public class Vehicle implements Resource {
     private boolean waiting;
     private String destination;
 
+    public static final int MAX_CAPACITY = 10;
+
 
     private boolean emergency;
 
@@ -102,7 +104,7 @@ public class Vehicle implements Resource {
     }
 
     public void increaseCapacity() {
-        if (this.currentCapacity < 10) {
+        if (this.currentCapacity < MAX_CAPACITY) {
             this.currentCapacity++;
             checkCapacity();
         } else {
@@ -132,10 +134,9 @@ public class Vehicle implements Resource {
 
 
     public void checkCapacity() {
-
-        if((this.currentCapacity == 10) || (this.second >= 15 && this.currentCapacity > 0)) {
-
+        if((this.currentCapacity == MAX_CAPACITY) || (this.second >= 15 && this.currentCapacity > 0)) {
             this.isFull = true;
+            // TODO make this sensible
             this.isMoving = true;
         } else {
             this.isFull = false;
@@ -186,6 +187,10 @@ public class Vehicle implements Resource {
         } else {
             System.out.println("Already in vehicle");
         }
+    }
+
+    public int getCapacity(){
+        return this.currentCapacity;
     }
 
     public void removeFromVehicle(Guest guest) {

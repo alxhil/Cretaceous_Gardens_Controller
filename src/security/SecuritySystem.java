@@ -40,7 +40,10 @@ public class SecuritySystem implements Resource {
     }
     public void setEmergency(boolean emergency) {
         this.emergency = emergency;
-        this.triggerTranquilizer();
+        this.playAudio(emergency);
+        if (emergency) {
+            this.triggerTranquilizer();
+        }
     }
 
     public void setAudio(String filePath) {
@@ -58,5 +61,7 @@ public class SecuritySystem implements Resource {
     }
 
     // Its a noop in the simulation
-    private void triggerTranquilizer() {}
+    private void triggerTranquilizer() {
+        System.out.println("Triggered Tranquilizer");
+    }
 }

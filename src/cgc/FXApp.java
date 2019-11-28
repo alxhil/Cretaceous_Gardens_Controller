@@ -138,12 +138,6 @@ public class FXApp extends Application {
                     }
                     guest.setMovingPoint(vehicle.getLocation());
                 }
-            } else if (zoneName.equals(Zone.DefaultZone.EXHIBIT.getName())) {
-                for (Guest guest: controller.getGuests()){
-                    if (vehicle.isMoving() && !guest.isInVehicle() && !guest.getIntersection(zone)){
-                        guest.setMovingPoint(Zone.DefaultZone.SOUTH_END.getRandomPoint());
-                    }
-                }
             }
         }
 
@@ -241,8 +235,6 @@ public class FXApp extends Application {
                 vehicle.move(-Math.cos(h) * 2*RATIO, -Math.sin(h) *2* RATIO);
                 // Hacky hand-tuned parameter for rotating
                 vehicle.rotateVehicle(0.565);
-               continue;
-
             }
 
 
@@ -251,10 +243,15 @@ public class FXApp extends Application {
              */
             for(Guest guest : controller.getGuests()) {
                 pathFinding(guest);
-                if(guest.getIntersection(vehicle) && !guest.isInVehicle()){
-                    vehicle.addToVehicle(guest);
+                if(!vehicle.isMoving() && guest.getIntersection(vehicle) &&
+                   !guest.isInVehicle() && vehicle.getCapacity() < Vehicle.MAX_CAPACITY){
                     vehicle.resetSecond();
+                    vehicle.addToVehicle(guest);
                     guest.setInvisible();
+                } else if (vehicle.getCapacity() >= Vehicle.MAX_CAPACITY &&
+                           !Zone.DefaultZone.SOUTH_END.isWithin(guest.getMovingPoint())){
+                    Point newDest = Zone.DefaultZone.SOUTH_END.getRandomPoint();
+                    guest.setMovingPoint(newDest);
                 }
             }
         }

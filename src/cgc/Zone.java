@@ -14,6 +14,8 @@ public class Zone {
     private boolean visitorZone;
     private boolean parkingZone;
     private String name;
+    private final int height;
+    private final int width;
 
     public enum DefaultZone {
         PARKING_SOUTH (new Point(0, 160), 100, 40, "parking_south"),
@@ -44,14 +46,27 @@ public class Zone {
         public int getWidth(){return this.width;}
 
         public Point getRandomPoint() {
-            int ran = (new Random().nextInt(this.width) - (this.width/2));
-            double x = this.location.getX();
-            double y = this.location.getY();
-            return new Point((ran), (int) y);
+            int x = (int)this.location.getX();
+            int y = (int)this.location.getY();
+            int randomX = new Random().nextInt(this.width / 2);
+            int randomY = new Random().nextInt(this.height / 2);
+            return new Point(x + randomY, y + randomY);
         }
 
         public String getName() {
             return this.name;
+        }
+
+        /*
+        * Indicates that a point is within a zone
+        */
+        public boolean isWithin(Point point) {
+            int originX = (int) this.location.getX();
+            int originY = (int) this.location.getY();
+            int endX = (int) this.width + originX;
+            int endY = (int) this.height + originY;
+            return (originX <= point.getX() && endX >= point.getX()
+                    && originY <= point.getY() && endY >= point.getY());
         }
 
     }
@@ -60,6 +75,8 @@ public class Zone {
         this.visitorZone = false;
         this.name = name;
         this.parkingZone = false;
+        this.height = height;
+        this.width = width;
         this.rectangle = new Rectangle(width, height);
         if(name.toLowerCase().startsWith("parking")){
             this.parkingZone = true;
@@ -95,6 +112,18 @@ public class Zone {
 
     public String getName() {
         return this.name;
+    }
+
+    /*
+    * Indicates that a point is within a zone
+    */
+    public boolean isWithin(Point point) {
+        int originX = (int) this.rectangle.getLayoutX();
+        int originY = (int) this.rectangle.getLayoutY();
+        int endX = (int) this.width + originX;
+        int endY = (int) this.height + originY;
+        return (originX <= point.getX() && endX >= point.getX()
+                && originY <= point.getY() && endY >= point.getY());
     }
 
 }
