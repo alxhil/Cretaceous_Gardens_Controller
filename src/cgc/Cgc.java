@@ -118,4 +118,6 @@ public class Cgc{
         this.securitySystem.setEmergency(emergency);
     }
 
+    public boolean isEmergency() {return this.emergency;}
+
 }

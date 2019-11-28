@@ -96,11 +96,7 @@ public class FXApp extends Application {
         });
 
        this.emergencyButton.setOnAction(e->{
-           controller.handleEvent(new AppUpdate(true));
-           controller.getSecuritySystem().playAudio(true);
-       //    controller.handleEvent(new AppUpdate(false));
-        //   controller.getSecuritySystem().playAudio(false);
-
+           controller.handleEvent(new AppUpdate(!controller.isEmergency()));
        });
 
         startUp();
