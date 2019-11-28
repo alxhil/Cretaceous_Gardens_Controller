@@ -9,6 +9,7 @@ import vehicle.Vehicle;
 
 import java.awt.*;
 import java.util.UUID;
+import java.lang.Math;
 
 public class Guest {
 
@@ -18,12 +19,14 @@ public class Guest {
     private Boolean inVehicle;
     private Circle circle;
     private Point movingPoint;
+    private Boolean leaving;
 
     public Guest(Point point){
         this.movingPoint = new Point(0,0);
         this.inVehicle = false;
         this.tick = 0;
         this.second = 0;
+        this.leaving = false;
         this.circle = new Circle(0, 0, 9);
         this.circle.setStroke(Color.WHITE);
         this.circle.setFill(Color.PURPLE);
@@ -42,6 +45,14 @@ public class Guest {
         return this.movingPoint;
     }
 
+    public void markForExit() {
+        this.leaving = true;
+    }
+
+    public Boolean hasExited() {
+        return this.leaving && Math.abs((int)this.circle.getTranslateX() - (int)this.movingPoint.getX()) <= 2
+               && Math.abs((int)this.circle.getTranslateY() - (int)this.movingPoint.getY()) <= 2;
+    }
 
 
     public void move(double x, double y) {
@@ -107,6 +118,6 @@ public class Guest {
         this.circle.managedProperty().bind(this.circle.visibleProperty());
     }
     // Noop for now, but eventually may want to behave differently
-    public void setEmergency(boolean emergency){};
+    public void setEmergency(Boolean emergency){};
 
 }

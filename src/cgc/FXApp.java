@@ -191,6 +191,9 @@ public class FXApp extends Application {
                         }
                         for (Guest guest : guestsToRemove) {
                             vehicle.removeFromVehicle(guest);
+                            // These guests will leave the park after getting to their
+                            // next moving point
+                            guest.markForExit();
                         }
                         vehicle.setDestination(Zone.DefaultZone.PARKING_NORTH.getName());
                     }
@@ -237,6 +240,10 @@ public class FXApp extends Application {
              * PathFinding Uses guest
              */
             for(Guest guest : controller.getGuests()) {
+                if (guest.hasExited()) {
+                    guest.setInvisible();
+                    continue;
+                }
                 pathFinding(guest);
                 if(!vehicle.isMoving() && guest.getIntersection(vehicle) &&
                    !guest.isInVehicle() && vehicle.getCapacity() < Vehicle.MAX_CAPACITY){
