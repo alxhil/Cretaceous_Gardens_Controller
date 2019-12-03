@@ -73,7 +73,7 @@ public class FXApp extends Application {
         StackPane.setAlignment(generateGuestButton, Pos.BOTTOM_LEFT);
         StackPane.setMargin(generateGuestButton, new Insets(400,600,150,150));
 
-        this.voltageMonitorButton = new Button("Disable Fence");
+        this.voltageMonitorButton = new Button("Toggle Fence");
         this.voltageMonitorButton.setFont(new Font(15));
         this.voltageMonitorButton.setStyle("-fx-background-color: #fff000;");
         StackPane.setAlignment(voltageMonitorButton, Pos.BOTTOM_LEFT);
@@ -139,12 +139,7 @@ public class FXApp extends Application {
          * Tick system **Keep this first in loop**
          *
          */
-        if (controller.getSecuritySystem().getVoltageMonitor().getVoltage() == 0.0f) {
-            lighting.setLight(new Light.Distant(45, 45, javafx.scene.paint.Color.YELLOW));
-        } else {
-            lighting.setLight(new Light.Distant(45, 45, javafx.scene.paint.Color.BLUE));
-        }
-        fenceImage.setEffect(lighting);
+        
         for(Vehicle vehicle : controller.getVehicles()) {
             vehicle.tick();
             vehicle.checkCapacity();
@@ -285,6 +280,12 @@ public class FXApp extends Application {
                 }
             }
         }
+        if (controller.getSecuritySystem().getVoltageMonitor().getVoltage() == 0.0f) {
+            lighting.setLight(new Light.Distant(45, 45, javafx.scene.paint.Color.RED));
+        } else {
+            lighting.setLight(new Light.Distant(45, 45, javafx.scene.paint.Color.GREEN));
+        }
+        fenceImage.setEffect(lighting);
 
     }
 
