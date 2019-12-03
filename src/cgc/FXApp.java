@@ -97,24 +97,24 @@ public class FXApp extends Application {
         lighting.setSurfaceScale(0);
 
         this.generateGuestButton.setOnAction(e->{
-            Point p = Zone.DefaultZone.SOUTH_END.getRandomPoint();
-            Guest guest = new Guest(p);
-            guest.setMovingPoint(p);
-            guest.move(p.getX(), p.getY());
-            System.out.println("Placed at (" + p.getX() + " ," + p.getY() + ")");
+            Point point = Zone.DefaultZone.SOUTH_END.getRandomPoint();
+            Guest guest = new Guest(point);
+            guest.setMovingPoint(point);
+            guest.move(point.getX(), point.getY());
+            System.out.println("Placed at (" + point.getX() + " ," + point.getY() + ")");
             controller.registerGuest(guest);
             Shape visitorShape = guest.getShape();
             root.getChildren().add(visitorShape);
-            visitorShape.setTranslateX(p.getX());
-            visitorShape.setTranslateY(p.getY());
+            visitorShape.setTranslateX(point.getX());
+            visitorShape.setTranslateY(point.getY());
         });
 
         this.voltageMonitorButton.setOnAction(e -> {
-            VoltageMonitor vm = controller.getSecuritySystem().getVoltageMonitor();
-            if (vm.getVoltage() == 0.0f) {
-                vm.enable();
+            VoltageMonitor voltageMonitor = controller.getSecuritySystem().getVoltageMonitor();
+            if (voltageMonitor.getVoltage() == 0.0f) {
+                voltageMonitor.enable();
             } else {
-                vm.disable();
+                voltageMonitor.disable();
             }
         });
 

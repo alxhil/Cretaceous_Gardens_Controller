@@ -56,8 +56,8 @@ public class SecuritySystem implements Resource {
         this.mediaPlayer.setVolume(.25);
     }
 
-    public void playAudio(Boolean b){
-        if(b){
+    public void playAudio(Boolean ifAudioOn){
+        if(ifAudioOn){
             this.mediaPlayer.setAutoPlay(true);
         } else {
             this.mediaPlayer.stop();
