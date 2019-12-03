@@ -1,7 +1,9 @@
 package guest;
 
 
+import astation.AutomatedStation;
 import cgc.Zone;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
@@ -20,6 +22,7 @@ public class Guest {
     private Circle circle;
     private Point movingPoint;
     private Boolean leaving;
+    private Boolean registered;
 
     public Guest(Point point){
         this.movingPoint = new Point(0,0);
@@ -27,9 +30,10 @@ public class Guest {
         this.tick = 0;
         this.second = 0;
         this.leaving = false;
+        this.registered = false;
         this.circle = new Circle(0, 0, 9);
         this.circle.setStroke(Color.WHITE);
-        this.circle.setFill(Color.PURPLE);
+        this.circle.setFill(Color.RED);
         this.uuid = UUID.randomUUID();
     }
 
@@ -43,6 +47,20 @@ public class Guest {
 
     public Point getMovingPoint() {
         return this.movingPoint;
+    }
+
+    public void registerGuest() {
+        this.registered = true;
+        this.circle.setFill(Color.GREEN);
+    }
+
+    public void deregisterGuest() {
+        this.registered = false;
+        this.circle.setFill(Color.RED);
+    }
+
+    public Boolean guestRegisterStatus() {
+        return this.registered;
     }
 
     public void markForExit() {
@@ -77,6 +95,9 @@ public class Guest {
         return this.getShape().getBoundsInParent().intersects(zone.getShape().getBoundsInParent());
     }
 
+    public Boolean getIntersection(AutomatedStation astation) {
+        return this.getShape().getBoundsInParent().intersects(astation.getShape().getBoundsInParent());
+    }
 
 
     public Shape getShape (){

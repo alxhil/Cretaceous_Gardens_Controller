@@ -18,16 +18,26 @@ public class Cgc{
     private LinkedList<AutomatedStation> stationList;
     private LinkedList<Zone> zoneList;
     private SecuritySystem securitySystem;
+    private AutomatedStation astation;
     private int guestCount = 0;
     private boolean emergency = false;
 
 
     public Cgc(){
+        this.astation = null;
         this.zoneList = new LinkedList<Zone>();
         this.guestList = new LinkedList<Guest>();
         this.vehicleList = new LinkedList<Vehicle>();
         this.stationList = new LinkedList<AutomatedStation>();
         this.securitySystem = new SecuritySystem(this);
+    }
+
+    public void setAutomatedStation(AutomatedStation a) {
+        this.astation = a;
+    }
+
+    public AutomatedStation getAstation() {
+        return this.astation;
     }
 
     public void registerGuest(Guest guest){

@@ -4,21 +4,17 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-
 import javafx.scene.layout.BorderPane;
 import javafx.scene.effect.Light;
 import javafx.scene.effect.Lighting;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
@@ -32,7 +28,6 @@ import vehicle.Vehicle;
 
 
 import java.awt.*;
-import java.io.PipedOutputStream;
 import java.util.LinkedList;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -50,6 +45,8 @@ public class FXApp extends Application {
     private Button voltageMonitorButton;
     private Lighting lighting = new Lighting();
     private ImageView fenceImage;
+
+
 
     public static void main(String[] args) {
         launch(args);
@@ -149,6 +146,7 @@ public class FXApp extends Application {
             guest.tick();
         }
 
+
         for(Zone zone : controller.getZoneList()) {
             Vehicle vehicle = controller.getVehicles().get(0);
             String zoneName = zone.getName();
@@ -160,8 +158,18 @@ public class FXApp extends Application {
                     if (guest.isInVehicle()) {
                         continue;
                     }
-                    guest.setMovingPoint(vehicle.getLocation());
+                    if(guest.guestRegisterStatus()) {
+                        guest.setMovingPoint(vehicle.getLocation());
+                    } else {
+                        guest.setMovingPoint(new Point(300,300));
+                    }
                 }
+            }
+        }
+
+        for(Guest g : controller.getGuests()) {
+            if(g.getIntersection(controller.getAstation())){
+                g.registerGuest();
             }
         }
 
@@ -176,7 +184,8 @@ public class FXApp extends Application {
             for (Vehicle vehicle : controller.getVehicles()) {
                 String zoneName = zone.getName();
                 if (zoneName.equals(Zone.DefaultZone.PARKING_NORTH.getName())){
-                    if (vehicle.isMoving() && vehicle.getIntersection(zone) && vehicle.getDestination().equals(zoneName)) {
+                    if (vehicle.isMoving() && vehicle.getIntersection(zone) &&
+                            vehicle.getDestination().equals(zoneName)) {
                         vehicle.setMoving(false);
                         vehicle.resetSecond();
                         vehicle.toggleWaiting();
@@ -281,9 +290,9 @@ public class FXApp extends Application {
             }
         }
         if (controller.getSecuritySystem().getVoltageMonitor().getVoltage() == 0.0f) {
-            lighting.setLight(new Light.Distant(45, 45, javafx.scene.paint.Color.RED));
+            lighting.setLight(new Light.Distant(45, 45, Color.RED));
         } else {
-            lighting.setLight(new Light.Distant(45, 45, javafx.scene.paint.Color.GREEN));
+            lighting.setLight(new Light.Distant(45, 45, Color.GREEN));
         }
         fenceImage.setEffect(lighting);
 
@@ -359,10 +368,13 @@ public class FXApp extends Application {
     public void startUp() throws FileNotFoundException {
 
         Image carImage = new Image(new FileInputStream("static/img/car.png"));
-
+        Image payStation = new Image(new FileInputStream("static/img/payStation.png"));
+        ImageView payStationImage = new ImageView(new Image(new FileInputStream("static/img/payStation.png")));
         Vehicle vehicle = new Vehicle(Zone.DefaultZone.PARKING_SOUTH.getRandomPoint(), carImage);
+        controller.setAutomatedStation(new AutomatedStation(controller, payStation));
         vehicle.setDestination(Zone.DefaultZone.PARKING_NORTH.getName());
         controller.register(vehicle);
+        root.getChildren().add(controller.getAstation().getShape());
 
         // Trees are on the border pane
         // getTreePane method give borderPane with trees
@@ -400,11 +412,13 @@ public class FXApp extends Application {
         StackPane.setAlignment(fenceImage,Pos.TOP_CENTER);
         StackPane.setMargin(fenceImage, new Insets(50));
 
-        ImageView payStationImage = new ImageView(new Image(new FileInputStream("static/img/payStation.png")));
+
         payStationImage.setFitWidth(50);
         payStationImage.setFitHeight(50);
-        StackPane.setAlignment(payStationImage, Pos.BOTTOM_CENTER);
-        StackPane.setMargin(payStationImage, new Insets(0,0,100,0));
+        payStationImage.setTranslateX(300);
+        payStationImage.setTranslateY(300);
+        //StackPane.setAlignment(payStationImage, Pos.BOTTOM_CENTER);
+        //StackPane.setMargin(payStationImage, new Insets(0,0,100,0));
 
         ImageView waterImage = new ImageView(new Image(new FileInputStream("static/img/water.png")));
         waterImage.setFitWidth(200);
@@ -427,6 +441,7 @@ public class FXApp extends Application {
                 vehicle.getShape(),
                 vehicle.getText(),
                 vehicle.getTimerText()
+
         );
     }
 
