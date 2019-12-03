@@ -16,7 +16,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 import javafx.scene.layout.BorderPane;
-
+import javafx.scene.effect.Light;
+import javafx.scene.effect.Lighting;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
@@ -47,6 +48,8 @@ public class FXApp extends Application {
     private Button generateGuestButton;
     private Button emergencyButton;
     private Button voltageMonitorButton;
+    private Lighting lighting = new Lighting();
+    private ImageView fenceImage;
 
     public static void main(String[] args) {
         launch(args);
@@ -88,7 +91,10 @@ public class FXApp extends Application {
         StackPane.setAlignment(emergencyButton,Pos.BOTTOM_LEFT);
         StackPane.setMargin(emergencyButton, new Insets(400,600,160,50));
 
-
+        lighting.setDiffuseConstant(2.0);
+        lighting.setSpecularConstant(0.0);
+        lighting.setSpecularExponent(0);
+        lighting.setSurfaceScale(0);
 
         this.generateGuestButton.setOnAction(e->{
             Point p = Zone.DefaultZone.SOUTH_END.getRandomPoint();
@@ -133,6 +139,12 @@ public class FXApp extends Application {
          * Tick system **Keep this first in loop**
          *
          */
+        if (controller.getSecuritySystem().getVoltageMonitor().getVoltage() == 0.0f) {
+            lighting.setLight(new Light.Distant(45, 45, javafx.scene.paint.Color.YELLOW));
+        } else {
+            lighting.setLight(new Light.Distant(45, 45, javafx.scene.paint.Color.BLUE));
+        }
+        fenceImage.setEffect(lighting);
         for(Vehicle vehicle : controller.getVehicles()) {
             vehicle.tick();
             vehicle.checkCapacity();
@@ -380,7 +392,7 @@ public class FXApp extends Application {
         StackPane.setAlignment(trexImage,Pos.TOP_CENTER);
         StackPane.setMargin(trexImage, new Insets(100));
 
-        ImageView fenceImage = new ImageView(new Image(new FileInputStream("static/img/fence.png")));
+        fenceImage = new ImageView(new Image(new FileInputStream("static/img/fence.png")));
         fenceImage.setFitHeight(200);
         fenceImage.setFitWidth(300);
         fenceImage.setRotate(180.0);
