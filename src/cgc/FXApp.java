@@ -25,6 +25,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import astation.AutomatedStation;
+import security.VoltageMonitor;
 import guest.Guest;
 import vehicle.Vehicle;
 
@@ -103,7 +104,12 @@ public class FXApp extends Application {
         });
 
         this.voltageMonitorButton.setOnAction(e -> {
-            controller.getSecuritySystem().getVoltageMonitor().disable();
+            VoltageMonitor vm = controller.getSecuritySystem().getVoltageMonitor();
+            if (vm.getVoltage() == 0.0f) {
+                vm.enable();
+            } else {
+                vm.disable();
+            }
         });
 
        this.emergencyButton.setOnAction(e->{
