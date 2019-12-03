@@ -72,8 +72,8 @@ public class FXApp extends Application {
         this.voltageMonitorButton = new Button("Disable Fence");
         this.voltageMonitorButton.setFont(new Font(15));
         this.voltageMonitorButton.setStyle("-fx-background-color: #fff000;");
-        StackPane.setAlignment(voltageMonitorButton, Pos.TOP_LEFT);
-        StackPane.setMargin(voltageMonitorButton, new Insets(400,600,150,150));
+        StackPane.setAlignment(voltageMonitorButton, Pos.BOTTOM_LEFT);
+        StackPane.setMargin(voltageMonitorButton, new Insets(400,600,190,150));
 
         ImageView imageView = new ImageView(new Image( new FileInputStream("static/img/emergency.png")));
         imageView.setFitHeight(100);
