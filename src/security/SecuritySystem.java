@@ -32,8 +32,12 @@ public class SecuritySystem implements Resource {
         this.emergency = false;
         this.monitor = new VoltageMonitor();
         this.controller = controller;
-
     }
+
+    public VoltageMonitor getVoltageMonitor() {
+        return this.monitor;
+    }
+
     public boolean sendStatus() {
         this.controller.handleEvent(new SecurityUpdate(this.monitor.getVoltage(), true));
         return true;

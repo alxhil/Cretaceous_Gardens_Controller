@@ -45,6 +45,7 @@ public class FXApp extends Application {
     private Cgc controller = new Cgc();
     private Button generateGuestButton;
     private Button emergencyButton;
+    private Button voltageMonitorButton;
 
     public static void main(String[] args) {
         launch(args);
@@ -68,6 +69,11 @@ public class FXApp extends Application {
         StackPane.setAlignment(generateGuestButton, Pos.BOTTOM_LEFT);
         StackPane.setMargin(generateGuestButton, new Insets(400,600,150,150));
 
+        this.voltageMonitorButton = new Button("Disable Fence");
+        this.voltageMonitorButton.setFont(new Font(15));
+        this.voltageMonitorButton.setStyle("-fx-background-color: #fff000;");
+        StackPane.setAlignment(voltageMonitorButton, Pos.TOP_LEFT);
+        StackPane.setMargin(voltageMonitorButton, new Insets(400,600,150,150));
 
         ImageView imageView = new ImageView(new Image( new FileInputStream("static/img/emergency.png")));
         imageView.setFitHeight(100);
@@ -94,6 +100,10 @@ public class FXApp extends Application {
             root.getChildren().add(visitorShape);
             visitorShape.setTranslateX(p.getX());
             visitorShape.setTranslateY(p.getY());
+        });
+
+        this.voltageMonitorButton.setOnAction(e -> {
+            controller.getSecuritySystem().getVoltageMonitor().disable();
         });
 
        this.emergencyButton.setOnAction(e->{
@@ -388,6 +398,7 @@ public class FXApp extends Application {
                 longTreePane,
                 shortTreePane,
                 generateGuestButton,
+                voltageMonitorButton,
                 emergencyButton,
                 pathImage,
                 trexImage,

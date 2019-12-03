@@ -57,7 +57,7 @@ public class Cgc{
         if (className.equals("SecurityUpdate")) {
             SecuritySystem.SecurityUpdate update = (SecuritySystem.SecurityUpdate)updateObj;
             if (update.voltage <= 0.0 && !this.emergency) {
-                System.out.printf("Voltage is %f, enabling emergency mode!");
+                System.out.printf("Voltage is %f, enabling emergency mode!", update.voltage);
                 this.setEmergency(true);
             }
         } else if(className.equals("AppUpdate")) {
