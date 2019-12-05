@@ -106,7 +106,7 @@ public class Vehicle implements Resource {
     public void increaseCapacity() {
         if (this.currentCapacity < MAX_CAPACITY) {
             this.currentCapacity++;
-            checkCapacity();
+            this.checkCapacity();
         } else {
             System.out.println("Max Capacity Reached already Car identifier: " + this.identifier);
         }

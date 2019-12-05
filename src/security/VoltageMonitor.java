@@ -6,7 +6,7 @@ public class VoltageMonitor{
     private float voltage;
 
     public VoltageMonitor(){
-        this.voltage = 2.5f;
+        this.voltage = 5000.0f;
     }
     public float getVoltage(){
         return voltage;
@@ -15,7 +15,7 @@ public class VoltageMonitor{
         this.voltage = 0.0f;
     }
     public void enable(){
-        this.voltage = 2.5f;
+        this.voltage = 5000.0f;
     }
 
 }

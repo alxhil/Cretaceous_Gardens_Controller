@@ -86,10 +86,10 @@ public class FXApp extends Application {
         StackPane.setAlignment(emergencyButton,Pos.BOTTOM_LEFT);
         StackPane.setMargin(emergencyButton, new Insets(400,600,160,50));
 
-        lighting.setDiffuseConstant(2.0);
-        lighting.setSpecularConstant(0.0);
-        lighting.setSpecularExponent(0);
-        lighting.setSurfaceScale(0);
+        this.lighting.setDiffuseConstant(2.0);
+        this.lighting.setSpecularConstant(0.0);
+        this.lighting.setSpecularExponent(0);
+        this.lighting.setSurfaceScale(0);
 
         this.generateGuestButton.setOnAction(e->{
             Point point = Zone.DefaultZone.SOUTH_END.getRandomPoint();
@@ -97,7 +97,7 @@ public class FXApp extends Application {
             guest.setMovingPoint(point);
             guest.move(point.getX(), point.getY());
             System.out.println("Placed at (" + point.getX() + " ," + point.getY() + ")");
-            controller.registerGuest(guest);
+            this.controller.registerGuest(guest);
             Shape visitorShape = guest.getShape();
             root.getChildren().add(visitorShape);
             visitorShape.setTranslateX(point.getX());
@@ -105,7 +105,7 @@ public class FXApp extends Application {
         });
 
         this.voltageMonitorButton.setOnAction(e -> {
-            VoltageMonitor voltageMonitor = controller.getSecuritySystem().getVoltageMonitor();
+            VoltageMonitor voltageMonitor = this.controller.getSecuritySystem().getVoltageMonitor();
             if (voltageMonitor.getVoltage() == 0.0f) {
                 voltageMonitor.enable();
             } else {
@@ -114,12 +114,12 @@ public class FXApp extends Application {
         });
 
        this.emergencyButton.setOnAction(e->{
-           controller.handleEvent(new AppUpdate(!controller.isEmergency()));
+           this.controller.handleEvent(new AppUpdate(!this.controller.isEmergency()));
        });
 
         startUp();
         zoneStart();
-        controller.getSecuritySystem().setAudio("static/audio/siren.mp3");
+        this.controller.getSecuritySystem().setAudio("static/audio/siren.mp3");
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.0133), event -> {
             gameLoop();
         }));
@@ -365,9 +365,9 @@ public class FXApp extends Application {
         Image payStation = new Image(new FileInputStream("static/img/payStation.png"));
         ImageView payStationImage = new ImageView(new Image(new FileInputStream("static/img/payStation.png")));
         Vehicle vehicle = new Vehicle(Zone.DefaultZone.PARKING_SOUTH.getRandomPoint(), carImage);
-        controller.setAutomatedStation(new AutomatedStation(controller, payStation));
+        this.controller.setAutomatedStation(new AutomatedStation(controller, payStation));
         vehicle.setDestination(Zone.DefaultZone.PARKING_NORTH.getName());
-        controller.register(vehicle);
+        this.controller.register(vehicle);
         root.getChildren().add(controller.getAstation().getShape());
 
         // Trees are on the border pane
@@ -453,7 +453,7 @@ public class FXApp extends Application {
                 defZone.getHeight(),
                 defZone.getName()
             );
-            controller.registerZone(zone);
+            this.controller.registerZone(zone);
             root.getChildren().add(zone.getShape());
         }
 
