@@ -290,7 +290,7 @@ public class FXApp extends Application {
                 int flip = 1;
                 if (isEmergency){
                     double degrees = this.getDegreesFromCenter(vehicle.getLocation());
-                    if ((degrees > 90.0 && degrees < 180.0) || degrees < -90.0 ){
+                    if ((degrees > 90.0 && degrees < 180.0) || (degrees < -90.0 && degrees > -180.0)){
                         flip = -1;
                     }
                 }
