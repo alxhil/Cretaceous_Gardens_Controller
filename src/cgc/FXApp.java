@@ -361,6 +361,7 @@ public class FXApp extends Application {
         Image payStation = new Image(new FileInputStream("static/img/payStation.png"));
         ImageView payStationImage = new ImageView(new Image(new FileInputStream("static/img/payStation.png")));
         Vehicle vehicle = new Vehicle(Zone.DefaultZone.PARKING_SOUTH.getRandomPoint(), carImage);
+        vehicle.move(-Math.cos(h) * 2 * RATIO, -Math.sin(h) * 2 * RATIO);
         this.controller.setAutomatedStation(new AutomatedStation(controller, payStation));
         vehicle.setDestination(Zone.DefaultZone.PARKING_NORTH.getName());
         this.controller.register(vehicle);
