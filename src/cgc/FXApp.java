@@ -137,7 +137,6 @@ public class FXApp extends Application {
         
         for(Vehicle vehicle : this.controller.getVehicles()) {
             vehicle.tick();
-            vehicle.checkCapacity();
         }
 
         for(Guest guest : this.controller.getGuests()) {
@@ -212,13 +211,10 @@ public class FXApp extends Application {
                     }
                 } else if (zoneName.equals(Zone.DefaultZone.EXHIBIT.getName())){
                     for (Guest guest : this.controller.getGuests()) {
-                        if (!guest.getIntersection(zone) || vehicle.getSecond() < 10){
+                        if (!guest.getIntersection(zone) || (!isEmergency && vehicle.getSecond() < 10)){
                             continue;
                         }
-                        // TODO Support getting vehicles by zone
                         guest.setMovingPoint(vehicle.getLocation());
-                        guest.setInVehicle(false);
-
                     };
                 }
             }

@@ -71,6 +71,8 @@ public class Vehicle implements Resource {
         this.emergency = emergency;
         if (emergency) {
             this.setDestination(Zone.DefaultZone.PARKING_SOUTH.getName());
+        } else {
+            this.setDestination(Zone.DefaultZone.PARKING_NORTH.getName());
         }
     }
 
@@ -213,6 +215,7 @@ public class Vehicle implements Resource {
     }
 
     public void tick() {
+        this.checkCapacity();
         this.tick++;
         if(this.tick >= 60){
             this.second++;
