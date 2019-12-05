@@ -53,7 +53,7 @@ public class SecuritySystem implements Resource {
     public void setAudio(String filePath) {
         this.media = new Media(new File(filePath).toURI().toString());
         this.mediaPlayer = new MediaPlayer(this.media);
-        this.mediaPlayer.setVolume(.25);
+        this.mediaPlayer.setVolume(.05);
     }
 
     public void playAudio(Boolean ifAudioOn){

@@ -8,6 +8,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -16,8 +18,10 @@ import javafx.scene.effect.Lighting;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -62,17 +66,23 @@ public class FXApp extends Application {
         primaryStage.show();
         primaryStage.setResizable(false);
 
+
         this.generateGuestButton = new Button("Generate Guests");
         this.generateGuestButton.setFont(new Font(15));
         this.generateGuestButton.setStyle("-fx-background-color: #ff0000;");
-        StackPane.setAlignment(generateGuestButton, Pos.BOTTOM_LEFT);
-        StackPane.setMargin(generateGuestButton, new Insets(400,600,150,150));
+        generateGuestButton.setTranslateX(310);
+        generateGuestButton.setTranslateY(10);
+
+        //StackPane.setAlignment(generateGuestButton, Pos.BOTTOM_LEFT);
+        //StackPane.setMargin(generateGuestButton, new Insets(400,600,150,150));
 
         this.voltageMonitorButton = new Button("Toggle Fence");
         this.voltageMonitorButton.setFont(new Font(15));
         this.voltageMonitorButton.setStyle("-fx-background-color: #fff000;");
-        StackPane.setAlignment(voltageMonitorButton, Pos.BOTTOM_LEFT);
-        StackPane.setMargin(voltageMonitorButton, new Insets(400,600,190,150));
+        this.voltageMonitorButton.setTranslateX(310);
+        this.voltageMonitorButton.setTranslateY(60);
+        //StackPane.setAlignment(voltageMonitorButton, Pos.BOTTOM_LEFT);
+        //StackPane.setMargin(voltageMonitorButton, new Insets(400,600,190,150));
 
         ImageView imageView = new ImageView(new Image( new FileInputStream("static/img/emergency.png")));
         imageView.setFitHeight(100);
@@ -83,8 +93,10 @@ public class FXApp extends Application {
         this.emergencyButton.setMinSize(2*r, 2*r);
         this.emergencyButton.setMaxSize(2*r, 2*r);
         this.emergencyButton.setGraphic(imageView);
-        StackPane.setAlignment(emergencyButton,Pos.BOTTOM_LEFT);
-        StackPane.setMargin(emergencyButton, new Insets(400,600,160,50));
+        this.emergencyButton.setTranslateX(310);
+        this.emergencyButton.setTranslateY(150);
+        //StackPane.setAlignment(emergencyButton,Pos.BOTTOM_LEFT);
+        //StackPane.setMargin(emergencyButton, new Insets(400,600,160,50));
 
         this.lighting.setDiffuseConstant(2.0);
         this.lighting.setSpecularConstant(0.0);
@@ -123,6 +135,42 @@ public class FXApp extends Application {
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.0133), event -> {
             gameLoop();
         }));
+        Rectangle buttonBox = new Rectangle(150,300);
+        buttonBox.setTranslateX(310);
+        buttonBox.setTranslateY(100);
+        buttonBox.setFill(Color.WHITE);
+        buttonBox.setStroke(Color.GREY);
+        buttonBox.setStrokeWidth(5);
+        buttonBox.toBack();
+        Rectangle water = new Rectangle(950,100,Color.DARKBLUE);
+        water.setStroke(Color.TAN);
+        water.setTranslateY(450);
+        water.setStrokeWidth(15);
+        water.setBlendMode(BlendMode.SRC_ATOP);
+        root.getChildren().add(water);
+        ImageView ferryImage = new ImageView(new Image(new FileInputStream("static/img/ferry.png")));
+        ferryImage.setTranslateX(0);
+        ferryImage.setTranslateY(370);
+        ferryImage.setFitHeight(200);
+        ferryImage.setFitWidth(200);
+        root.getChildren().add(ferryImage);
+
+        Text controlCenterText = new Text(0, 0, "Control Center");
+        controlCenterText.setTranslateX(305);
+        controlCenterText.setTranslateY(-30);
+
+        controlCenterText.setFill(Color.BLACK);
+        controlCenterText.setFont(new Font("Verdana", 15));
+
+        controlCenterText.toFront();
+
+
+
+
+
+        root.getChildren().add(buttonBox);
+        root.getChildren().add(controlCenterText);
+
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
 
@@ -134,7 +182,11 @@ public class FXApp extends Application {
          * Tick system **Keep this first in loop**
          *
          */
-        
+
+
+        generateGuestButton.toFront();
+        emergencyButton.toFront();
+        voltageMonitorButton.toFront();
         for(Vehicle vehicle : this.controller.getVehicles()) {
             vehicle.tick();
         }
@@ -325,6 +377,7 @@ public class FXApp extends Application {
     public BorderPane getTreePane(String imageName) throws FileNotFoundException {
         BorderPane treePane = new BorderPane();
 
+
         ImageView tree1 = new ImageView(new Image(new FileInputStream(imageName))) ,
                 tree2 = new ImageView(new Image(new FileInputStream(imageName))) ,
                 tree3 = new ImageView(new Image(new FileInputStream(imageName))) ,
@@ -356,6 +409,7 @@ public class FXApp extends Application {
     }
 
     public void startUp() throws FileNotFoundException {
+
 
         Image carImage = new Image(new FileInputStream("static/img/car.png"));
         Image payStation = new Image(new FileInputStream("static/img/payStation.png"));
@@ -404,6 +458,7 @@ public class FXApp extends Application {
         StackPane.setMargin(fenceImage, new Insets(50));
 
 
+
         payStationImage.setFitWidth(50);
         payStationImage.setFitHeight(50);
         payStationImage.setTranslateX(300);
@@ -428,7 +483,7 @@ public class FXApp extends Application {
                 trexImage,
                 fenceImage,
                 payStationImage,
-                waterImage,
+                //waterImage,
                 vehicle.getShape(),
                 vehicle.getText(),
                 vehicle.getTimerText()

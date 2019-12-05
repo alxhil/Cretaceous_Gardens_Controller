@@ -82,15 +82,15 @@ public class Zone {
         if(name.toLowerCase().startsWith("parking")){
             this.parkingZone = true;
             this.rectangle.setFill(Color.TRANSPARENT);
-            this.rectangle.setStroke(Color.RED);
+            //DEBUG this.rectangle.setStroke(Color.RED);
         } else if (name.equalsIgnoreCase("south_end")){
             this.visitorZone = true;
             this.rectangle.setFill(Color.TRANSPARENT);
-            this.rectangle.setStroke(Color.BLACK);
+            //DEBUG this.rectangle.setStroke(Color.BLACK);
 
         } else if (name.equalsIgnoreCase("exhibit")) {
             this.rectangle.setFill(Color.TRANSPARENT);
-            this.rectangle.setStroke(Color.BLUE);
+            //DEBUG this.rectangle.setStroke(Color.BLUE);
         }
         this.rectangle.toFront();
         this.rectangle.setX(point.getX());
