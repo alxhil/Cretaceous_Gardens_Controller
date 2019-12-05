@@ -146,9 +146,6 @@ public class Vehicle implements Resource {
 
 
     public void move(double x, double y){
-        if (this.emergency) {
-            return;
-        }
         this.location.setLocation(x,y);
         this.rectangle.setTranslateX(x);
         this.rectangle.setTranslateY(y);
@@ -198,7 +195,8 @@ public class Vehicle implements Resource {
             if(guestsInVehicle.get(i) == guest) {
                 guestsInVehicle.remove(i);
                 currentCapacity--;
-                this.text.setText(""+currentCapacity);
+                this.text.setText("" + currentCapacity);
+                guest.setInVehicle(false);
             }
         }
     }
@@ -208,9 +206,6 @@ public class Vehicle implements Resource {
     }
 
     public void rotateVehicle(double rotation) {
-        if (this.emergency) {
-            return;
-        }
         double centerX = this.rectangle.getX() + this.rectangle.getWidth() / 2;
         double centerY = this.rectangle.getY() + this.rectangle.getWidth() / 2;
         Rotate rotate = new Rotate(rotation, centerX, centerY);

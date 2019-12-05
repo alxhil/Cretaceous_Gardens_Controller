@@ -53,8 +53,6 @@ public class FXApp extends Application {
     }
 
 
-
-
     public void start(Stage primaryStage) throws FileNotFoundException {
         root.setPrefSize(WIDTH,HEIGHT);
 
@@ -137,51 +135,19 @@ public class FXApp extends Application {
          *
          */
         
-        for(Vehicle vehicle : controller.getVehicles()) {
+        for(Vehicle vehicle : this.controller.getVehicles()) {
             vehicle.tick();
             vehicle.checkCapacity();
         }
 
-        for(Guest guest : controller.getGuests()) {
+        for(Guest guest : this.controller.getGuests()) {
             guest.tick();
         }
 
+        boolean isEmergency = this.controller.isEmergency();
 
-        for(Zone zone : controller.getZoneList()) {
-            Vehicle vehicle = controller.getVehicles().get(0);
-            String zoneName = zone.getName();
-            if (zoneName.equals(Zone.DefaultZone.PARKING_SOUTH.getName())){
-                if (!vehicle.getIntersection(zone) || vehicle.isMoving()) {
-                    break;
-                }
-                for (Guest guest : controller.getGuests()) {
-                    if (guest.isInVehicle()) {
-                        continue;
-                    }
-                    if(guest.guestRegisterStatus()) {
-                        guest.setMovingPoint(vehicle.getLocation());
-                    } else {
-                        guest.setMovingPoint(new Point(300,300));
-                    }
-                }
-            }
-        }
-
-        for(Guest g : controller.getGuests()) {
-            if(g.getIntersection(controller.getAstation())){
-                g.registerGuest();
-            }
-        }
-
-
-
-        /**
-         * Checking for collision if moving
-         * PARKING_NORTH COLLISION
-         */
-
-        for(Zone zone : controller.getZoneList()) {
-            for (Vehicle vehicle : controller.getVehicles()) {
+        for(Zone zone : this.controller.getZoneList()) {
+            for (Vehicle vehicle : this.controller.getVehicles()) {
                 String zoneName = zone.getName();
                 if (zoneName.equals(Zone.DefaultZone.PARKING_NORTH.getName())){
                     if (vehicle.isMoving() && vehicle.getIntersection(zone) &&
@@ -209,6 +175,19 @@ public class FXApp extends Application {
                         vehicle.resetSecond();
                     }
                 } else if (zoneName.equals(Zone.DefaultZone.PARKING_SOUTH.getName())){
+                    if (vehicle.getIntersection(zone) && !vehicle.isMoving()) {
+                        for (Guest guest : this.controller.getGuests()) {
+                            if (isEmergency || guest.isInVehicle() || guest.isLeaving()) {
+                                continue;
+                            }
+                            if(guest.guestRegisterStatus()) {
+                                guest.setMovingPoint(vehicle.getLocation());
+                            } else {
+                                // Move to the automation station point
+                                guest.setMovingPoint(new Point(300, 300));
+                            }
+                        }
+                    }
                     if (vehicle.isMoving() && vehicle.getIntersection(zone) && vehicle.getDestination().equals(zoneName)) {
                         vehicle.setMoving(false);
                         vehicle.resetSecond();
@@ -227,10 +206,12 @@ public class FXApp extends Application {
                             // next moving point
                             guest.markForExit();
                         }
-                        vehicle.setDestination(Zone.DefaultZone.PARKING_NORTH.getName());
+                        if (!isEmergency){
+                            vehicle.setDestination(Zone.DefaultZone.PARKING_NORTH.getName());
+                        }
                     }
                 } else if (zoneName.equals(Zone.DefaultZone.EXHIBIT.getName())){
-                    for (Guest guest : controller.getGuests()) {
+                    for (Guest guest : this.controller.getGuests()) {
                         if (!guest.getIntersection(zone) || vehicle.getSecond() < 10){
                             continue;
                         }
@@ -239,10 +220,7 @@ public class FXApp extends Application {
                         guest.setInVehicle(false);
 
                     };
-                } else {
-                    continue;
                 }
-
             }
         }
 
@@ -252,33 +230,42 @@ public class FXApp extends Application {
         // In case the security system goes down,
         // in a real implementation this would be done in the security
         // systems event loop
-        controller.getSecuritySystem().sendStatus();
-        for (AutomatedStation station : controller.getStations()) {
+        this.controller.getSecuritySystem().sendStatus();
+        for (AutomatedStation station : this.controller.getStations()) {
             station.sendStatus();
         }
-        for (Vehicle vehicle : controller.getVehicles()) {
+        for (Vehicle vehicle : this.controller.getVehicles()) {
             // Currently a noop
             vehicle.sendStatus();
             if(vehicle.isMoving()) {
-                h += .01;
-
-                vehicle.move(-Math.cos(h) * 2*RATIO, -Math.sin(h) *2* RATIO);
+                // Should either be 1 or -1 to flip the sign of h
+                int flip = 1;
+                if (isEmergency){
+                    double degrees = this.getDegreesFromCenter(vehicle.getLocation());
+                    if ((degrees > 90.0 && degrees < 180.0) || degrees < -90.0 ){
+                        flip = -1;
+                    }
+                }
+                this.h += .01 * flip;
+                vehicle.move(-Math.cos(h) * 2 * RATIO, -Math.sin(h) * 2 * RATIO);
                 // Hacky hand-tuned parameter for rotating
-                vehicle.rotateVehicle(0.565);
+                vehicle.rotateVehicle(0.5655 * flip);
             }
 
 
             /**
              * PathFinding Uses guest
              */
-            for(Guest guest : controller.getGuests()) {
+            for(Guest guest : this.controller.getGuests()) {
+                if (guest.isInVehicle()){
+                    continue;
+                }
                 if (guest.hasExited()) {
                     guest.setInvisible();
                     continue;
                 }
                 pathFinding(guest);
-                if(!vehicle.isMoving() && guest.getIntersection(vehicle) &&
-                   !guest.isInVehicle() && vehicle.getCapacity() < Vehicle.MAX_CAPACITY){
+                if (!guest.isLeaving() && guest.getIntersection(vehicle) && vehicle.getCapacity() < Vehicle.MAX_CAPACITY) {
                     vehicle.resetSecond();
                     vehicle.addToVehicle(guest);
                     guest.setInvisible();
@@ -287,15 +274,22 @@ public class FXApp extends Application {
                     Point newDest = Zone.DefaultZone.SOUTH_END.getRandomPoint();
                     guest.setMovingPoint(newDest);
                 }
+                if(!guest.guestRegisterStatus() && guest.getIntersection(controller.getAstation())){
+                    guest.registerGuest();
+                }
             }
         }
         if (controller.getSecuritySystem().getVoltageMonitor().getVoltage() == 0.0f) {
-            lighting.setLight(new Light.Distant(45, 45, Color.RED));
+            this.lighting.setLight(new Light.Distant(45, 45, Color.RED));
         } else {
-            lighting.setLight(new Light.Distant(45, 45, Color.GREEN));
+            this.lighting.setLight(new Light.Distant(45, 45, Color.GREEN));
         }
-        fenceImage.setEffect(lighting);
+        this.fenceImage.setEffect(lighting);
 
+    }
+
+    private double getDegreesFromCenter(Point location){
+        return Math.atan2(location.getY(), location.getX()) * 180 / Math.PI;
     }
 
     public void pathFinding(Guest guest) {

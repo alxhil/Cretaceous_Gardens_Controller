@@ -67,6 +67,10 @@ public class Guest {
         this.leaving = true;
     }
 
+    public Boolean isLeaving() {
+        return this.leaving;
+    }
+
     public Boolean hasExited() {
         return this.leaving && Math.abs((int)this.circle.getTranslateX() - (int)this.movingPoint.getX()) <= 2
                && Math.abs((int)this.circle.getTranslateY() - (int)this.movingPoint.getY()) <= 2;
